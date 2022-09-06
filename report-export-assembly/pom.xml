@@ -11,5 +11,16 @@
 
    <artifactId>report-export-assembly</artifactId>
 
+   <dependencies>
+      <dependency>
+         <groupId>club.javafamily</groupId>
+         <artifactId>report-export-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>club.javafamily</groupId>
+         <artifactId>report-export-tablelens</artifactId>
+      </dependency>
+   </dependencies>
 
 </project>

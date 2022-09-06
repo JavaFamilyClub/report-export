@@ -19,6 +19,53 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <report.export.version>0.0.1-SNAPSHOT</report.export.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-core</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-assembly</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-tablelens</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-exporter</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-exporter-core</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-exporter-excel</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>report-export-exporter-pdf</artifactId>
+                <version>${report.export.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

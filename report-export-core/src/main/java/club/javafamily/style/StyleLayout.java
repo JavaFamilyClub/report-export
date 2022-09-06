@@ -1,5 +1,7 @@
 package club.javafamily.style;
 
+import club.javafamily.constants.StyleLayoutConstants;
+
 import java.awt.*;
 
 /**
@@ -7,7 +9,7 @@ import java.awt.*;
  * @date 2022/9/6 上午9:00
  * @description 指定 Assembly 的样式及布局
  */
-public interface StyleLayout {
+public interface StyleLayout extends StyleLayoutConstants {
 
     /**
      * getting background color

@@ -1,5 +1,6 @@
 package club.javafamily.assembly;
 
+import club.javafamily.common.DoublePoint;
 import club.javafamily.lens.TableLens;
 import club.javafamily.style.StyleLayout;
 
@@ -10,19 +11,19 @@ import java.awt.*;
  * @date 2022/9/6 上午9:01
  * @description 报表元素
  */
-public interface Assembly {
+public interface Assembly<SL extends StyleLayout> {
 
     /**
      * 元素位置
      * @return Point
      */
-    Point getPosition();
+    DoublePoint getPosition();
 
     /**
      * 样式及布局
      * @return StyleLayout
      */
-    StyleLayout getStyleLayout();
+    SL getStyleLayout();
 
     /**
      * 数据
@@ -41,5 +42,11 @@ public interface Assembly {
      * @return 标题
      */
     String getTitle();
+
+    /**
+     * 标题是否可见
+     * @return bool
+     */
+    boolean isTitleVisible();
 
 }
