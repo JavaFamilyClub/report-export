@@ -8,8 +8,12 @@
     <artifactId>report-export</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
+
     <modules>
-        <module>lens-core</module>
+        <module>report-export-core</module>
+        <module>report-export-assembly</module>
+        <module>report-export-exporter</module>
+        <module>report-export-tablelens</module>
     </modules>
 
     <properties>
