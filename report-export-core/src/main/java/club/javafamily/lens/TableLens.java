@@ -15,6 +15,17 @@ public interface TableLens {
      */
     Object getObject(int row, int col);
 
+    /**
+     * get row count
+     * @return count
+     */
+    int getRowCount();
 
-
+    /**
+     * get header row count
+     * @return header count
+     */
+    default int getHeaderRowCount() {
+        return 1;
+    }
 }

@@ -4,8 +4,6 @@ import club.javafamily.common.DoublePoint;
 import club.javafamily.lens.TableLens;
 import club.javafamily.style.StyleLayout;
 
-import java.awt.*;
-
 /**
  * @author Jack Li
  * @date 2022/9/6 上午9:01
@@ -49,4 +47,15 @@ public interface Assembly<SL extends StyleLayout> {
      */
     boolean isTitleVisible();
 
+    /**
+     * 获取 Assembly 宽度
+     * @return width
+     */
+    double getWidth();
+
+    /**
+     * 获取 Assembly 高度
+     * @return height
+     */
+    double getHeight();
 }

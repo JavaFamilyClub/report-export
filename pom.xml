@@ -14,58 +14,103 @@
         <module>report-export-assembly</module>
         <module>report-export-exporter</module>
         <module>report-export-tablelens</module>
+        <module>chart-graph</module>
     </modules>
 
     <properties>
+        <javafamily.reportexport.version>0.0.1-SNAPSHOT</javafamily.reportexport.version>
+        <javafamily.utils.version>2.3.2-beta.4</javafamily.utils.version>
+
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <report.export.version>0.0.1-SNAPSHOT</report.export.version>
+
+        <slf4j.version>1.7.30</slf4j.version>
+        <jfreechart.version>1.5.3</jfreechart.version>
+        <lombok.version>1.18.8</lombok.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- 子 Module 依赖 -->
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-core</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-assembly</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-tablelens</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-exporter</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-exporter-core</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-exporter-excel</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>club.javafamily</groupId>
                 <artifactId>report-export-exporter-pdf</artifactId>
-                <version>${report.export.version}</version>
+                <version>${javafamily.reportexport.version}</version>
+            </dependency>
+
+            <!-- JavaFamily 依赖 -->
+            <dependency>
+                <artifactId>javafamily-utils-date</artifactId>
+                <groupId>club.javafamily</groupId>
+                <version>${javafamily.utils.version}</version>
+            </dependency>
+
+            <!-- 第三方依赖 -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jfree</groupId>
+                <artifactId>jfreechart</artifactId>
+                <version>${jfreechart.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 </project>

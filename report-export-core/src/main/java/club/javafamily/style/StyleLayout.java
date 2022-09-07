@@ -12,6 +12,12 @@ import java.awt.*;
 public interface StyleLayout extends StyleLayoutConstants {
 
     /**
+     * 获取包装 styleLayout
+     * @return styleLayout
+     */
+    StyleLayout getStyleLayout();
+
+    /**
      * getting background color
      * @param row row index
      * @param col col index

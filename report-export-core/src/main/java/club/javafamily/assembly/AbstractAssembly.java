@@ -53,6 +53,16 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
         return titleVisible;
     }
 
+    @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
