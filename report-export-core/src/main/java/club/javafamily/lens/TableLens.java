@@ -16,6 +16,13 @@ public interface TableLens {
     Object getObject(int row, int col);
 
     /**
+     * 获取列类型
+     * @param col index
+     * @return class
+     */
+    Class<?> getColumnType(Integer col);
+
+    /**
      * get row count
      * @return count
      */

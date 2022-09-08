@@ -1,18 +1,18 @@
 package club.javafamily.graph.utils;
 
 import club.javafamily.assembly.chart.ChartAssembly;
-import club.javafamily.assembly.chart.series.DomainSeries;
+import club.javafamily.assembly.chart.axis.XAxis;
 import club.javafamily.assembly.chart.series.Series;
+import club.javafamily.enums.DateLevel;
 import club.javafamily.lens.TableLens;
 import club.javafamily.utils.Tool;
 import club.javafamily.utils.collections.CollectionUtil;
 import club.javafamily.utils.common.MessageException;
 import club.javafamily.utils.spring.ObjectUtils;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.time.*;
+import org.jfree.data.xy.XYDataset;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jack Li
@@ -27,10 +27,10 @@ public class GraphUtils {
     * @param domainSeries
     * @return
     */
-   public static String getDomainLabel(TableLens lens,
-                                       DomainSeries domainSeries)
+   public static String getPrimaryX1Title(TableLens lens,
+                                          XAxis domainSeries)
    {
-      final String label = domainSeries.getLabel();
+      final String label = domainSeries.getTitle();
 
       if(!ObjectUtils.isEmpty(label)) {
          return label;
@@ -46,7 +46,7 @@ public class GraphUtils {
     * @param assembly Assembly
     * @return dataset
     */
-   public static Dataset createDataset(ChartAssembly assembly) {
+   public static XYDataset createXYDataset(ChartAssembly assembly) {
       final List<Series> valueSeries = assembly.getValueSeries();
 
       if(CollectionUtil.isEmpty(valueSeries)) {
@@ -54,36 +54,64 @@ public class GraphUtils {
       }
 
       final TableLens lens = assembly.getTableLens();
-      final DomainSeries domainSeries = assembly.getDomainSeries();
-      final int domainSeriesDataIndex = domainSeries.getDataIndex();
+      final XAxis primaryX1 = assembly.primaryX1Axis();
+      final int primaryX1DataIndex = primaryX1.getDataIndex();
 
-      TimeSeriesCollection dataset = new TimeSeriesCollection();
+      if(DateUtil.isDatetime(lens.getColumnType(primaryX1DataIndex))) {
+         TimeSeriesCollection dataset = new TimeSeriesCollection();
 
-      for (Series series : valueSeries) {
-         final int valueIndex = series.getDataIndex();
-         final String domainLabel = getDomainLabel(lens, domainSeries);
-         TimeSeries chartSeries = new TimeSeries(domainLabel);
+         for (Series series : valueSeries) {
+            final int valueIndex = series.getDataIndex();
+            final String primaryX1Title = getPrimaryX1Title(lens, primaryX1);
+            TimeSeries chartSeries = new TimeSeries(primaryX1Title);
 
-         for (int r = lens.getHeaderRowCount(); r < lens.getRowCount(); r++) {
-            chartSeries.add(createJFreeDate(domainSeries,
-               (Date) lens.getObject(r, domainSeriesDataIndex)),
-               getNumber(lens.getObject(r, valueIndex)));
+            for (int r = lens.getHeaderRowCount(); r < lens.getRowCount(); r++) {
+               chartSeries.add(createJFreeDate(primaryX1,
+                  (Date) lens.getObject(r, primaryX1DataIndex)),
+                  getNumber(lens.getObject(r, valueIndex)));
+            }
+
+            dataset.addSeries(chartSeries);
          }
 
-         dataset.addSeries(chartSeries);
+         return dataset;
       }
 
-      return dataset;
+      throw new UnsupportedOperationException("目前只支持 Date 类型的 x1!");
    }
 
    private static double getNumber(Object object) {
       return Double.parseDouble(Tool.toString(object));
    }
 
-   private static RegularTimePeriod createJFreeDate(DomainSeries domainSeries,
-                                                    Date date)
+   public static RegularTimePeriod createJFreeDate(XAxis xAxis,
+                                                   Date date)
    {
-      return null;
+      final Class<?> clazz = getDateJFreeType(xAxis.getDateLevel());
+
+      return RegularTimePeriod.createInstance(clazz, date,
+         TimeZone.getDefault(), Locale.getDefault());
+   }
+
+   public static Class<?> getDateJFreeType(DateLevel dateLevel) {
+      switch (dateLevel) {
+         case YEAR:
+            return Year.class;
+         case MONTH:
+            return Month.class;
+         case DAY:
+            return Day.class;
+         case HOUR:
+            return Hour.class;
+         case MINUTE:
+            return Minute.class;
+         case SECOND:
+            return Second.class;
+         case MILLISECOND:
+            return Millisecond.class;
+         default:
+            throw new UnsupportedOperationException("不支持的 Date Level!");
+      }
    }
 
 }
