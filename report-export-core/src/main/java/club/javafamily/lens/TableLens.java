@@ -35,4 +35,14 @@ public interface TableLens {
     default int getHeaderRowCount() {
         return 1;
     }
+
+    /**
+     * 获取 header 的 col 下标
+     * @param header
+     * @return
+     */
+    default int columnIndex(Object header) {
+        // TODO
+        return 0;
+    }
 }

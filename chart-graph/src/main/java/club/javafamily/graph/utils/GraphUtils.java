@@ -2,7 +2,10 @@ package club.javafamily.graph.utils;
 
 import club.javafamily.assembly.chart.ChartAssembly;
 import club.javafamily.assembly.chart.axis.XAxis;
-import club.javafamily.assembly.chart.series.Series;
+import club.javafamily.assembly.chart.impl.xy.axis.XyAxisInfo;
+import club.javafamily.assembly.chart.impl.xy.binding.XyChartBindingInfo;
+import club.javafamily.assembly.chart.impl.xy.ref.XyChartBindingRef;
+import club.javafamily.enums.DataTypeSchema;
 import club.javafamily.enums.DateLevel;
 import club.javafamily.lens.TableLens;
 import club.javafamily.utils.Tool;
@@ -22,13 +25,15 @@ import java.util.*;
 public class GraphUtils {
 
    /**
-    * 获取 x1
-    * @param lens
-    * @param domainSeries
-    * @return
+    * 获取 x1 title
+    * @param lens lens
+    * @param domainSeries x1 series
+    * @param x1PrimaryRef x1 data ref
+    * @return 如果未自定义 title, 就使用数据第一行 header
     */
    public static String getPrimaryX1Title(TableLens lens,
-                                          XAxis domainSeries)
+                                          XAxis domainSeries,
+                                          XyChartBindingRef x1PrimaryRef)
    {
       final String label = domainSeries.getTitle();
 
@@ -36,7 +41,7 @@ public class GraphUtils {
          return label;
       }
 
-      final int dataIndex = domainSeries.getDataIndex();
+      final int dataIndex = x1PrimaryRef.getColIndex();
 
       return Tool.toString(lens.getObject(0, dataIndex));
    }
@@ -47,45 +52,111 @@ public class GraphUtils {
     * @return dataset
     */
    public static XYDataset createXYDataset(ChartAssembly assembly) {
-      final List<Series> valueSeries = assembly.getValueSeries();
+      final XyChartBindingInfo chartBinding
+         = (XyChartBindingInfo) assembly.getChartBinding();
 
-      if(CollectionUtil.isEmpty(valueSeries)) {
-         throw new MessageException("请先绑定 Series 数据域!");
+      if(CollectionUtil.isEmpty(chartBinding.getYBindingRefs())) {
+         throw new MessageException("请先绑定 Y 数据域!");
       }
 
       final TableLens lens = assembly.getTableLens();
-      final XAxis primaryX1 = assembly.primaryX1Axis();
-      final int primaryX1DataIndex = primaryX1.getDataIndex();
+      final XyChartBindingRef x1PrimaryRef = chartBinding.primaryX1BindingRef();
+      final int primaryX1DataIndex = x1PrimaryRef.getColIndex();
 
-      if(DateUtil.isDatetime(lens.getColumnType(primaryX1DataIndex))) {
-         TimeSeriesCollection dataset = new TimeSeriesCollection();
-
-         for (Series series : valueSeries) {
-            final int valueIndex = series.getDataIndex();
-            final String primaryX1Title = getPrimaryX1Title(lens, primaryX1);
-            TimeSeries chartSeries = new TimeSeries(primaryX1Title);
-
-            for (int r = lens.getHeaderRowCount(); r < lens.getRowCount(); r++) {
-               chartSeries.add(createJFreeDate(primaryX1,
-                  (Date) lens.getObject(r, primaryX1DataIndex)),
-                  getNumber(lens.getObject(r, valueIndex)));
-            }
-
-            dataset.addSeries(chartSeries);
-         }
-
-         return dataset;
+      if(DateUtil.isDatetime(lens.getColumnType(primaryX1DataIndex))
+         || x1PrimaryRef.getType() == DataTypeSchema.TIME_SERIES)
+      {
+         return createTimeSeriesDs(assembly);
+      }
+      else if(x1PrimaryRef.getType() == DataTypeSchema.PERIOD)
+      {
+         return createPeriodDs(assembly);
       }
 
-      throw new UnsupportedOperationException("目前只支持 Date 类型的 x1!");
+      return createComparableDs(assembly);
+   }
+
+   /**
+    * 创建普通 dataset
+    * @param assembly chart
+    * @return dataset
+    */
+   private static XYDataset createComparableDs(ChartAssembly assembly) {
+      throw new UnsupportedOperationException("暂不支持!");
+   }
+
+   /**
+    * 创建 period dataset
+    * @param assembly chart
+    * @return dataset
+    */
+   private static XYDataset createPeriodDs(ChartAssembly assembly) {
+      final TableLens lens = assembly.getTableLens();
+      final XyChartBindingInfo chartBinding
+         = (XyChartBindingInfo) assembly.getChartBinding();
+      final XyAxisInfo axisInfo = (XyAxisInfo) assembly.getAxisInfo();
+      final XAxis primaryX1 = axisInfo.primaryX1Axis();
+      final XyChartBindingRef x1PrimaryRef = chartBinding.primaryX1BindingRef();
+      final int primaryX1DataIndex = x1PrimaryRef.getColIndex();
+
+      TimePeriodValuesCollection dataset = new TimePeriodValuesCollection();
+
+      for (XyChartBindingRef ref : chartBinding.getYBindingRefs()) {
+         final int valueIndex = ref.getColIndex();
+         final String primaryX1Title = getPrimaryX1Title(lens, primaryX1, x1PrimaryRef);
+         TimePeriodValues chartSeries = new TimePeriodValues(primaryX1Title);
+
+         for (int r = lens.getHeaderRowCount(); r < lens.getRowCount(); r++) {
+            chartSeries.add(createJFreePeriodDate(primaryX1,
+               (Date) lens.getObject(r, primaryX1DataIndex)),
+               getNumber(lens.getObject(r, valueIndex)));
+         }
+
+         dataset.addSeries(chartSeries);
+      }
+
+      return dataset;
+   }
+
+   /**
+    * 创建 timeSeries dataset
+    * @param assembly chart
+    * @return XYDataset
+    */
+   private static XYDataset createTimeSeriesDs(ChartAssembly assembly) {
+      final TableLens lens = assembly.getTableLens();
+      final XyChartBindingInfo chartBinding
+         = (XyChartBindingInfo) assembly.getChartBinding();
+      final XyAxisInfo axisInfo = (XyAxisInfo) assembly.getAxisInfo();
+      final XAxis primaryX1 = axisInfo.primaryX1Axis();
+      final XyChartBindingRef x1PrimaryRef = chartBinding.primaryX1BindingRef();
+      final int primaryX1DataIndex = x1PrimaryRef.getColIndex();
+
+      TimeSeriesCollection dataset = new TimeSeriesCollection();
+
+      for (XyChartBindingRef ref : chartBinding.getYBindingRefs()) {
+         final int valueIndex = ref.getColIndex();
+         final String primaryX1Title = getPrimaryX1Title(lens, primaryX1, x1PrimaryRef);
+         TimeSeries chartSeries = new TimeSeries(primaryX1Title);
+
+         for (int r = lens.getHeaderRowCount(); r < lens.getRowCount(); r++) {
+            chartSeries.add(createJFreePeriodDate(primaryX1,
+               (Date) lens.getObject(r, primaryX1DataIndex)),
+               getNumber(lens.getObject(r, valueIndex)));
+         }
+
+         dataset.addSeries(chartSeries);
+      }
+
+      return dataset;
    }
 
    private static double getNumber(Object object) {
       return Double.parseDouble(Tool.toString(object));
    }
 
-   public static RegularTimePeriod createJFreeDate(XAxis xAxis,
-                                                   Date date)
+   public static RegularTimePeriod createJFreePeriodDate(XAxis xAxis,
+                                                         Date date)
    {
       final Class<?> clazz = getDateJFreeType(xAxis.getDateLevel());
 

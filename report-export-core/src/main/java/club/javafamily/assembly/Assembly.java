@@ -1,5 +1,6 @@
 package club.javafamily.assembly;
 
+import club.javafamily.assembly.binding.BindingInfo;
 import club.javafamily.common.DoublePoint;
 import club.javafamily.lens.TableLens;
 import club.javafamily.style.StyleLayout;
@@ -58,4 +59,10 @@ public interface Assembly<SL extends StyleLayout> {
      * @return height
      */
     double getHeight();
+
+    /**
+     * 获取 binding 信息
+     * @return binding
+     */
+    BindingInfo getBinding();
 }

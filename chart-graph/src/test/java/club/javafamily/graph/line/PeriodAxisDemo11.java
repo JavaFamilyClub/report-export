@@ -57,7 +57,7 @@ public class PeriodAxisDemo11 extends ApplicationFrame {
               new SimpleDateFormat("HH"),
               new RectangleInsets(2.0D, 2.0D, 2.0D, 2.0D),
               new Font("SansSerif", 1, 12), Color.BLUE, true, new BasicStroke(0.0F), Color.LIGHT_GRAY),
-           new PeriodAxisLabelInfo(Day.class, new SimpleDateFormat("dd"))};
+           new PeriodAxisLabelInfo(Day.class, new SimpleDateFormat("dd日"))};
         domainAxis.setLabelInfo(info);
         plot.setDomainAxis(domainAxis);
 //        ChartUtils.applyCurrentTheme(chart);
@@ -86,12 +86,39 @@ public class PeriodAxisDemo11 extends ApplicationFrame {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(s1);
         dataset.addSeries(s2);
+        dataset.setXPosition(TimePeriodAnchor.END);
+        return dataset;
+    }
+
+    private static XYDataset createDataset2() {
+        TimePeriodValues s1 = new TimePeriodValues("L&G European Index Trust");
+        Calendar calendar = DateUtil.getTodayStartCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+
+        for (int i = 0; i < 24 * 3; i++) {
+            s1.add(new Hour(calendar.getTime()), Tool.getSecureRandom().nextDouble() * 30);
+            calendar.add(Calendar.HOUR, 1);
+        }
+
+        TimePeriodValues s2 = new TimePeriodValues("L&G UK Index Trust");
+        calendar = DateUtil.getTodayStartCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+
+        for (int i = 0; i < 24 * 3; i++) {
+            s2.add(new Hour(calendar.getTime()), Tool.getSecureRandom().nextDouble() * 30);
+            calendar.add(Calendar.HOUR, 1);
+        }
+
+        TimePeriodValuesCollection dataset = new TimePeriodValuesCollection();
+        dataset.addSeries(s1);
+        dataset.addSeries(s2);
         dataset.setXPosition(TimePeriodAnchor.MIDDLE);
+
         return dataset;
     }
 
     public static JPanel createDemoPanel() {
-        JFreeChart chart = createChart(createDataset());
+        JFreeChart chart = createChart(createDataset2());
         return new ChartPanel(chart);
     }
 

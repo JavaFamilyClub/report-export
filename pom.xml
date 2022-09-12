@@ -11,10 +11,11 @@
 
     <modules>
         <module>report-export-core</module>
-        <module>report-export-assembly</module>
-        <module>report-export-exporter</module>
         <module>report-export-tablelens</module>
+        <module>report-export-assembly</module>
         <module>chart-graph</module>
+
+        <module>report-export-exporter</module>
     </modules>
 
     <properties>

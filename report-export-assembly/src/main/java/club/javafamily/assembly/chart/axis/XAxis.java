@@ -16,11 +16,12 @@ import java.text.Format;
 public class XAxis extends Axis {
 
    /**
-    * axis data index in {@link club.javafamily.lens.TableLens}
+    * Date 级别
     */
-   private int dataIndex;
-
    private DateLevel dateLevel;
 
+   /**
+    * formatter
+    */
    private Format format;
 }

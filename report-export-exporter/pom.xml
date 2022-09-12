@@ -10,32 +10,33 @@
    <modelVersion>4.0.0</modelVersion>
 
    <artifactId>report-export-exporter</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>report-export-exporter-pdf</module>
-        <module>report-export-exporter-excel</module>
-    </modules>
+   <packaging>pom</packaging>
+   <modules>
+      <module>report-export-exporter-pdf</module>
+      <module>report-export-exporter-excel</module>
+      <module>report-export-exporter-main</module>
+   </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>club.javafamily</groupId>
-            <artifactId>report-export-core</artifactId>
-        </dependency>
+   <dependencies>
+      <dependency>
+         <groupId>club.javafamily</groupId>
+         <artifactId>report-export-core</artifactId>
+      </dependency>
 
-        <dependency>
-            <groupId>club.javafamily</groupId>
-            <artifactId>report-export-assembly</artifactId>
-        </dependency>
+      <dependency>
+         <groupId>club.javafamily</groupId>
+         <artifactId>report-export-assembly</artifactId>
+      </dependency>
 
-        <dependency>
-            <groupId>club.javafamily</groupId>
-            <artifactId>report-export-tablelens</artifactId>
-        </dependency>
+      <dependency>
+         <groupId>club.javafamily</groupId>
+         <artifactId>report-export-tablelens</artifactId>
+      </dependency>
 
-        <dependency>
-            <groupId>club.javafamily</groupId>
-            <artifactId>report-export-exporter-core</artifactId>
-        </dependency>
-    </dependencies>
+      <dependency>
+         <groupId>club.javafamily</groupId>
+         <artifactId>report-export-exporter-core</artifactId>
+      </dependency>
+   </dependencies>
 
 </project>

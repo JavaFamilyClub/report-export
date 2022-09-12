@@ -1,6 +1,7 @@
 package club.javafamily.graph;
 
 import club.javafamily.assembly.chart.ChartAssembly;
+import club.javafamily.assembly.chart.CustomChartAssembly;
 import club.javafamily.utils.collections.CollectionUtil;
 
 import java.awt.image.BufferedImage;
@@ -20,13 +21,18 @@ public class ChartGraphService {
    }
 
    /**
-    * 绘制 Chart
+    * 绘制 Chart 图
     * @param chart assembly
     * @return image
     */
-   public BufferedImage drawChart(ChartAssembly chart) {
+   public BufferedImage drawChartImage(ChartAssembly chart) {
       if(CollectionUtil.isEmpty(chartGraphs)) {
          throw new UnsupportedOperationException("没有注册的 ChartGraph!");
+      }
+
+      // 自定义 Chart 直接获取 image
+      if(chart instanceof CustomChartAssembly) {
+         return ((CustomChartAssembly) chart).createImage();
       }
 
       for (ChartGraph chartGraph : chartGraphs) {

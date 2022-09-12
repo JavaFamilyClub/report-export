@@ -1,5 +1,6 @@
 package club.javafamily.assembly;
 
+import club.javafamily.assembly.binding.BindingInfo;
 import club.javafamily.common.DoublePoint;
 import club.javafamily.constants.StyleLayoutConstants;
 import club.javafamily.lens.TableLens;
@@ -22,6 +23,8 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
     private String title;
 
     private boolean titleVisible;
+
+    protected BindingInfo bindingInfo;
 
     @Override
     public DoublePoint getPosition() {
@@ -63,6 +66,11 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
         return height;
     }
 
+    @Override
+    public BindingInfo getBinding() {
+        return bindingInfo;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -93,5 +101,9 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
 
     public void setTitleVisible(boolean titleVisible) {
         this.titleVisible = titleVisible;
+    }
+
+    public void setBindingInfo(BindingInfo bindingInfo) {
+        this.bindingInfo = bindingInfo;
     }
 }
