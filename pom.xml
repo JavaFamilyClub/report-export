@@ -76,6 +76,12 @@
                 <version>${javafamily.reportexport.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>club.javafamily</groupId>
+                <artifactId>chart-graph</artifactId>
+                <version>${javafamily.reportexport.version}</version>
+            </dependency>
+
             <!-- JavaFamily 依赖 -->
             <dependency>
                 <artifactId>javafamily-utils-bom</artifactId>

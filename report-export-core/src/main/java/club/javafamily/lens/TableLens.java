@@ -29,6 +29,12 @@ public interface TableLens {
     int getRowCount();
 
     /**
+     * get col count
+     * @return count
+     */
+    int getColCount();
+
+    /**
      * get header row count
      * @return header count
      */

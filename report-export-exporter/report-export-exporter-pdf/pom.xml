@@ -23,6 +23,10 @@
             <groupId>club.javafamily</groupId>
         </dependency>
 
+        <dependency>
+            <groupId>club.javafamily</groupId>
+            <artifactId>chart-graph</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

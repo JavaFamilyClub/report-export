@@ -11,10 +11,16 @@ import club.javafamily.common.FloatInsets;
 import club.javafamily.enums.ExportType;
 import club.javafamily.exporter.AbstractExporter;
 import club.javafamily.exporter.Exporter;
+import club.javafamily.lens.TableLens;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.io.image.PngImageData;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Table;
 
 import java.io.OutputStream;
 import java.util.Collections;
@@ -67,6 +73,11 @@ public class PdfExporter extends AbstractExporter {
     @Override
     public void exportTable(TableAssembly assembly) {
         assert document != null;
+
+        TableLens tableLens = assembly.getTableLens();
+        int colCount = tableLens.getColCount();
+
+        Table table = new Table(colCount);
     }
 
     @Override
@@ -77,6 +88,12 @@ public class PdfExporter extends AbstractExporter {
     @Override
     public void exportImage(ImageAssembly assembly) {
         assert document != null;
+
+        ImageData imageData = ImageDataFactory.create(assembly.getImgData());
+
+        Image image = new Image(imageData);
+
+        document.add(image);
     }
 
     @Override
