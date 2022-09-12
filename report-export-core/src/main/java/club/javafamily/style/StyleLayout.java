@@ -25,4 +25,12 @@ public interface StyleLayout extends StyleLayoutConstants {
      */
     Color getBackground(int row, int col);
 
+    /**
+     * getting insets
+     * @param row row
+     * @param col col
+     * @return Insets
+     */
+    Insets getInset(int row, int col);
+
 }

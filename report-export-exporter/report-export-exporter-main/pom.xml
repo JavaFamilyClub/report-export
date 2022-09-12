@@ -15,12 +15,26 @@
       <dependency>
          <groupId>club.javafamily</groupId>
          <artifactId>report-export-exporter-excel</artifactId>
+         <scope>provided</scope>
       </dependency>
 
       <dependency>
          <groupId>club.javafamily</groupId>
          <artifactId>report-export-exporter-pdf</artifactId>
+         <scope>provided</scope>
       </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-autoconfigure-processor</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-autoconfigure</artifactId>
+      </dependency>
+
    </dependencies>
 
 </project>

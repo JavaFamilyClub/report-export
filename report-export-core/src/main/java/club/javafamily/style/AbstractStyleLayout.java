@@ -31,4 +31,12 @@ public class AbstractStyleLayout implements StyleLayout {
          ? styleLayout.getBackground(row, col) : clr;
    }
 
+   @Override
+   public Insets getInset(int row, int col) {
+      final Insets val = (Insets) insetsMatrix.getByLevel(row, col);
+
+      return (val == null && styleLayout != null)
+              ? styleLayout.getInset(row, col) : val;
+   }
+
 }

@@ -1,5 +1,7 @@
 package club.javafamily.constants;
 
+import club.javafamily.common.FloatInsets;
+
 import java.awt.*;
 import java.io.Serializable;
 
@@ -36,4 +38,9 @@ public interface StyleLayoutConstants extends Serializable {
      * 默认背景色
      */
     Color DEFAULT_BG = Color.WHITE;
+
+    /**
+     * 默认 Insets
+     */
+    FloatInsets DEFAULT_INSETS = new FloatInsets(0, 0, 0, 0);
 }

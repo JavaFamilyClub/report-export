@@ -56,7 +56,6 @@ public class ChartGraphService {
     * 加载组件内部支持的 {@link ChartGraph}
     */
    private void loadInternalGraph() {
-
    }
 
    /**

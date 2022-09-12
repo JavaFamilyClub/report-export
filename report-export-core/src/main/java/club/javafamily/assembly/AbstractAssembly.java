@@ -14,9 +14,9 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
 
     private SL styleLayout;
 
-    private double width = StyleLayoutConstants.ASSEMBLY_WIDTH_AUTO;
+    private float width = StyleLayoutConstants.ASSEMBLY_WIDTH_AUTO;
 
-    private double height = StyleLayoutConstants.ASSEMBLY_HEIGHT_AUTO;
+    private float height = StyleLayoutConstants.ASSEMBLY_HEIGHT_AUTO;
 
     private DoublePoint position;
 
@@ -57,12 +57,12 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
     }
 
     @Override
-    public double getWidth() {
+    public float getWidth() {
         return width;
     }
 
     @Override
-    public double getHeight() {
+    public float getHeight() {
         return height;
     }
 
@@ -83,11 +83,11 @@ public abstract class AbstractAssembly <SL extends StyleLayout> implements Assem
         this.styleLayout = styleLayout;
     }
 
-    public void setWidth(double width) {
+    public void setWidth(float width) {
         this.width = width;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 

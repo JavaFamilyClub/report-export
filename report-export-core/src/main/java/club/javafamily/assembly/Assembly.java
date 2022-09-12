@@ -18,6 +18,14 @@ public interface Assembly<SL extends StyleLayout> {
      */
     DoublePoint getPosition();
 
+    default float getX() {
+        return getPosition() != null ? (float) getPosition().getX() : 0F;
+    }
+
+    default float getY() {
+        return getPosition() != null ? (float) getPosition().getY() : 0F;
+    }
+
     /**
      * 样式及布局
      * @return StyleLayout
@@ -52,13 +60,13 @@ public interface Assembly<SL extends StyleLayout> {
      * 获取 Assembly 宽度
      * @return width
      */
-    double getWidth();
+    float getWidth();
 
     /**
      * 获取 Assembly 高度
      * @return height
      */
-    double getHeight();
+    float getHeight();
 
     /**
      * 获取 binding 信息
