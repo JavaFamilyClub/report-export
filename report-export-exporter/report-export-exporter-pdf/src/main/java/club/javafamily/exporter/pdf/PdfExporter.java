@@ -10,18 +10,20 @@ import club.javafamily.assembly.text.TextAssembly;
 import club.javafamily.common.FloatInsets;
 import club.javafamily.enums.ExportType;
 import club.javafamily.exporter.AbstractExporter;
-import club.javafamily.exporter.Exporter;
+import club.javafamily.exporter.pdf.utils.PdfUtils;
 import club.javafamily.lens.TableLens;
+import club.javafamily.style.StyleLayout;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.io.image.PngImageData;
 import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.TextAlignment;
 
+import java.awt.*;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
@@ -61,7 +63,9 @@ public class PdfExporter extends AbstractExporter {
         pageSize.setX(report.getX())
                 .setY(report.getY());
 
-        // 创建一个 A4 大小的文档, 代表 PDF 的一页
+        // 创建一个文档, 代表 PDF 的一页
+        final PdfPage currentPage = pdf.addNewPage(pageSize);
+
         document = new Document(pdf, pageSize);
 
         ReportSheetStyleLayout styleLayout = report.getStyleLayout();
@@ -71,13 +75,32 @@ public class PdfExporter extends AbstractExporter {
     }
 
     @Override
-    public void exportTable(TableAssembly assembly) {
+    public void exportTable(TableAssembly assembly) throws Exception {
         assert document != null;
 
         TableLens tableLens = assembly.getTableLens();
         int colCount = tableLens.getColCount();
 
+        writeTitle(document, assembly);
+
         Table table = new Table(colCount);
+
+
+    }
+
+    public static void writeTitle(Document doc, Assembly assembly) throws Exception {
+        Paragraph p = new Paragraph(assembly.getTitle());
+        final StyleLayout styleLayout = assembly.getStyleLayout();
+        Font titleFont = styleLayout.getTitleFont();
+        final Color titleFontColor = styleLayout.getTitleFontColor();
+
+        p.setFont(PdfUtils.convertFont(titleFont))
+           .setFontSize(titleFont.getSize())
+           .setTextAlignment(TextAlignment.CENTER)
+           .setHorizontalAlignment(HorizontalAlignment.CENTER)
+           .setFontColor(PdfUtils.convertColor(titleFontColor));
+
+        doc.add(p);
     }
 
     @Override

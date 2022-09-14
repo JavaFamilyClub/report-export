@@ -17,6 +17,8 @@ public class AbstractStyleLayout implements StyleLayout {
    protected IndexedSparseMatrix alignMatrix = new IndexedSparseMatrix();
    protected IndexedSparseMatrix insetsMatrix = new IndexedSparseMatrix();
    protected IndexedSparseMatrix fontMatrix = new IndexedSparseMatrix();
+   protected Font titleFont;
+   protected Color titleFontColor;
 
    @Override
    public StyleLayout getStyleLayout() {
@@ -37,6 +39,16 @@ public class AbstractStyleLayout implements StyleLayout {
 
       return (val == null && styleLayout != null)
               ? styleLayout.getInset(row, col) : val;
+   }
+
+   @Override
+   public Font getTitleFont() {
+      return titleFont;
+   }
+
+   @Override
+   public Color getTitleFontColor() {
+      return titleFontColor;
    }
 
 }

@@ -8,7 +8,6 @@ import club.javafamily.assembly.table.TableAssembly;
 import club.javafamily.assembly.text.TextAssembly;
 import club.javafamily.enums.ExportType;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public interface Exporter {
      * 导出表格
      * @param assembly TableAssembly
      */
-    void exportTable(TableAssembly assembly);
+    void exportTable(TableAssembly assembly) throws Exception;
 
     /**
      * 导出 Chart
@@ -73,6 +72,7 @@ public interface Exporter {
 
     /**
      * 导出完成
+     * @throws Exception when failed
      */
     void completeExport() throws Exception;
 
