@@ -10,8 +10,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>report-export-exporter-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}</description>
+    <url>https://github.com/JavaFamilyClub/report-export/tree/main/report-export-exporter/report-export-exporter-core</url>
 
     <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
 </project>

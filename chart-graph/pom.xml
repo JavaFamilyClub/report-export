@@ -11,6 +11,12 @@
 
    <artifactId>chart-graph</artifactId>
 
+   <packaging>jar</packaging>
+
+   <name>${project.artifactId}</name>
+   <description>${project.artifactId}</description>
+   <url>https://github.com/JavaFamilyClub/report-export/tree/main/chart-graph</url>
+
    <dependencies>
 
       <dependency>

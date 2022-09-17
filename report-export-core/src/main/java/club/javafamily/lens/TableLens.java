@@ -1,5 +1,7 @@
 package club.javafamily.lens;
 
+import club.javafamily.utils.spring.ObjectUtils;
+
 /**
  * @author Jack Li
  * @date 2022/9/6 上午9:00
@@ -43,12 +45,45 @@ public interface TableLens {
     }
 
     /**
-     * 获取 header 的 col 下标
-     * @param header
-     * @return
+     * get header col count
+     * @return header count
      */
-    default int columnIndex(Object header) {
-        // TODO
-        return 0;
+    default int getHeaderColCount() {
+        return 1;
+    }
+
+    /**
+     * 获取 header 的 col 下标
+     * @param header header
+     * @return index
+     */
+    default Integer columnIndex(Object header) {
+        if(getRowCount() < 1 || getColCount() < 1 || header == null) {
+            return null;
+        }
+
+        for(int row = 0; row < getHeaderRowCount(); row++) {
+            for(int col = 0; col < getColCount(); col++) {
+                Object cell = getObject(row, col);
+
+                if(cell != null && cell.equals(header)) {
+                    return col;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    default boolean isRowHeader(int row) {
+        return row < getHeaderRowCount();
+    }
+
+    default boolean isColHeader(int col) {
+        return col < getHeaderColCount();
+    }
+
+    default boolean isHeader(int row, int col) {
+        return isRowHeader(row) || isColHeader(col);
     }
 }

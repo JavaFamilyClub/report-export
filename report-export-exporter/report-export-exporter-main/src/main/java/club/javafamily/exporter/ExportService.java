@@ -1,11 +1,7 @@
 package club.javafamily.exporter;
 
 import club.javafamily.assembly.Assembly;
-import club.javafamily.assembly.chart.ChartAssembly;
-import club.javafamily.assembly.image.ImageAssembly;
 import club.javafamily.assembly.report.ReportSheet;
-import club.javafamily.assembly.table.TableAssembly;
-import club.javafamily.assembly.text.TextAssembly;
 import club.javafamily.enums.ExportType;
 import club.javafamily.exporter.excel.ExcelExporter;
 import club.javafamily.exporter.pdf.PdfExporter;

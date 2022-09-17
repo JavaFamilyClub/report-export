@@ -6,6 +6,7 @@ import club.javafamily.assembly.image.ImageAssembly;
 import club.javafamily.assembly.report.ReportSheet;
 import club.javafamily.assembly.report.style.ReportSheetStyleLayout;
 import club.javafamily.assembly.table.TableAssembly;
+import club.javafamily.assembly.table.style.TableStyleLayout;
 import club.javafamily.assembly.text.TextAssembly;
 import club.javafamily.common.FloatInsets;
 import club.javafamily.enums.ExportType;
@@ -13,15 +14,20 @@ import club.javafamily.exporter.AbstractExporter;
 import club.javafamily.exporter.pdf.utils.PdfUtils;
 import club.javafamily.lens.TableLens;
 import club.javafamily.style.StyleLayout;
+import club.javafamily.utils.Tool;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 
 import java.awt.*;
 import java.io.OutputStream;
@@ -85,7 +91,21 @@ public class PdfExporter extends AbstractExporter {
 
         Table table = new Table(colCount);
 
+        // 指定 table 相对 Document 的宽度.
+        // <code>UnitValue.createPercentValue(100)</code> 表示 100%(排除页边距).
+        table.setWidth(UnitValue.createPercentValue(100))
+                .setTextAlignment(TextAlignment.CENTER)
+                .setHorizontalAlignment(HorizontalAlignment.CENTER);
 
+        // 填充 table
+        for(int i = 0; i < tableLens.getRowCount(); i++) {
+            for(int j = 0; j < tableLens.getColCount(); j++) {
+                fillCellData(table, assembly, i, j);
+            }
+        }
+
+        // 将 table 写入 Document
+        document.add(table);
     }
 
     public static void writeTitle(Document doc, Assembly assembly) throws Exception {
@@ -101,6 +121,43 @@ public class PdfExporter extends AbstractExporter {
            .setFontColor(PdfUtils.convertColor(titleFontColor));
 
         doc.add(p);
+    }
+
+    /**
+     * fill cell data.
+     * @param table pdf table
+     * @param assembly table
+     * @param row row index
+     * @param col col index
+     */
+    private void fillCellData(Table table, TableAssembly assembly, int row, int col) throws Exception {
+        TableLens tableLens = assembly.getTableLens();
+        TableStyleLayout styleLayout = assembly.getStyleLayout();
+        boolean isHeader = tableLens.isHeader(row, col);
+        Object cell = tableLens.getObject(row, col);
+
+        Font cellFont = styleLayout.getFont(row, col);
+        Color cellBG = styleLayout.getBackground(row, col);
+        PdfFont pdfFont = PdfUtils.convertFont(cellFont);
+
+        // <code>Paragraph</code> 代表一个段落, 传入字符串就可以写入一个文本段落到 Document,
+        // 传入 <code>Cell</code> 就会画一个 cell.
+        Paragraph text = new Paragraph(Tool.toString(cell));
+        text.setFont(pdfFont);
+
+        // create cell
+        Cell pdfCell = new Cell().add(text);
+
+        pdfCell.setFont(pdfFont)
+                .setBorder(new SolidBorder(new DeviceRgb(Color.BLACK), 0.5f))
+                .setBackgroundColor(PdfUtils.convertColor(cellBG));
+
+        if(isHeader) {
+            table.addHeaderCell(pdfCell);
+        }
+        else {
+            table.addCell(pdfCell);
+        }
     }
 
     @Override
@@ -124,4 +181,9 @@ public class PdfExporter extends AbstractExporter {
         assert document != null;
     }
 
+    @Override
+    public void completeExport() throws Exception {
+        super.completeExport();
+        document.close();
+    }
 }

@@ -34,6 +34,14 @@ public interface StyleLayout extends StyleLayoutConstants {
     Insets getInset(int row, int col);
 
     /**
+     * getting font
+     * @param row row
+     * @param col col
+     * @return font
+     */
+    Font getFont(int row, int col);
+
+    /**
      * title font
      * @return font
      */

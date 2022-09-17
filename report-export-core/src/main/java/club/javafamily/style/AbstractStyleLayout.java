@@ -41,6 +41,21 @@ public class AbstractStyleLayout implements StyleLayout {
               ? styleLayout.getInset(row, col) : val;
    }
 
+   /**
+    * getting font
+    *
+    * @param row row
+    * @param col col
+    * @return font
+    */
+   @Override
+   public Font getFont(int row, int col) {
+      Font val = (Font) fontMatrix.get(row, col);
+
+      return (val == null && styleLayout != null)
+              ? styleLayout.getFont(row, col) : val;
+   }
+
    @Override
    public Font getTitleFont() {
       return titleFont;

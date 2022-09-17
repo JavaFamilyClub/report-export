@@ -10,6 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>report-export-exporter-pdf</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}</description>
+    <url>https://github.com/JavaFamilyClub/report-export/tree/main/report-export-exporter/report-export-exporter-pdf</url>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,6 +23,11 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>club.javafamily</groupId>
+            <artifactId>report-export-exporter-core</artifactId>
+        </dependency>
 
         <dependency>
             <artifactId>javafamily-utils-pdf-itext</artifactId>
