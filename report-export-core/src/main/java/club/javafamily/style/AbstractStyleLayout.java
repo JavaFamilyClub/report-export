@@ -66,4 +66,16 @@ public class AbstractStyleLayout implements StyleLayout {
       return titleFontColor;
    }
 
+   public void setBackground(int row, int col, Color color) {
+      backgroundMatrix.set(row, col, color);
+   }
+
+   public void setRowBackground(int row, Color color) {
+      backgroundMatrix.setRow(row, color);
+   }
+
+   public void setColBackground(int col, Color color) {
+      backgroundMatrix.setColumn(col, color);
+   }
+
 }

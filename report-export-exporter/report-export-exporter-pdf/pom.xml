@@ -19,7 +19,6 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <pdf.itext.version>7.2.3</pdf.itext.version>
     </properties>
 
     <dependencies>
@@ -32,6 +31,12 @@
         <dependency>
             <artifactId>javafamily-utils-pdf-itext</artifactId>
             <groupId>club.javafamily</groupId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-asian</artifactId>
+            <version>${itext.asian.version}</version>
         </dependency>
 
         <dependency>

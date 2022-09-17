@@ -25,9 +25,9 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.*;
-import com.itextpdf.layout.property.HorizontalAlignment;
-import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 
 import java.awt.*;
 import java.io.OutputStream;
@@ -70,14 +70,21 @@ public class PdfExporter extends AbstractExporter {
                 .setY(report.getY());
 
         // 创建一个文档, 代表 PDF 的一页
-        final PdfPage currentPage = pdf.addNewPage(pageSize);
+//        final PdfPage currentPage = pdf.addNewPage(pageSize);
 
         document = new Document(pdf, pageSize);
 
         ReportSheetStyleLayout styleLayout = report.getStyleLayout();
+
+        if(styleLayout == null) {
+            return;
+        }
+
         FloatInsets pageInsets = styleLayout.getPageInsets();
 
-        document.setMargins(pageInsets.top, pageInsets.right, pageInsets.bottom, pageInsets.left);
+        if(pageInsets != null) {
+            document.setMargins(pageInsets.top, pageInsets.right, pageInsets.bottom, pageInsets.left);
+        }
     }
 
     @Override
@@ -91,15 +98,18 @@ public class PdfExporter extends AbstractExporter {
 
         Table table = new Table(colCount);
 
+        table.setFixedPosition((float) assembly.getPosition().getX(),
+                (float) assembly.getPosition().getY(),
+                UnitValue.createPercentValue(100));
+
         // 指定 table 相对 Document 的宽度.
         // <code>UnitValue.createPercentValue(100)</code> 表示 100%(排除页边距).
-        table.setWidth(UnitValue.createPercentValue(100))
-                .setTextAlignment(TextAlignment.CENTER)
+        table.setTextAlignment(TextAlignment.CENTER)
                 .setHorizontalAlignment(HorizontalAlignment.CENTER);
 
         // 填充 table
         for(int i = 0; i < tableLens.getRowCount(); i++) {
-            for(int j = 0; j < tableLens.getColCount(); j++) {
+            for(int j = 0; j < colCount; j++) {
                 fillCellData(table, assembly, i, j);
             }
         }
@@ -109,16 +119,26 @@ public class PdfExporter extends AbstractExporter {
     }
 
     public static void writeTitle(Document doc, Assembly assembly) throws Exception {
+        if (assembly.getTitle() == null) {
+            return;
+        }
+
         Paragraph p = new Paragraph(assembly.getTitle());
         final StyleLayout styleLayout = assembly.getStyleLayout();
         Font titleFont = styleLayout.getTitleFont();
         final Color titleFontColor = styleLayout.getTitleFontColor();
 
         p.setFont(PdfUtils.convertFont(titleFont))
-           .setFontSize(titleFont.getSize())
-           .setTextAlignment(TextAlignment.CENTER)
-           .setHorizontalAlignment(HorizontalAlignment.CENTER)
-           .setFontColor(PdfUtils.convertColor(titleFontColor));
+                .setTextAlignment(TextAlignment.CENTER)
+                .setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+        if(titleFont != null) {
+             p.setFontSize(titleFont.getSize());
+        }
+
+        if(titleFontColor != null) {
+            p.setFontColor(PdfUtils.convertColor(titleFontColor));
+        }
 
         doc.add(p);
     }
@@ -133,7 +153,7 @@ public class PdfExporter extends AbstractExporter {
     private void fillCellData(Table table, TableAssembly assembly, int row, int col) throws Exception {
         TableLens tableLens = assembly.getTableLens();
         TableStyleLayout styleLayout = assembly.getStyleLayout();
-        boolean isHeader = tableLens.isHeader(row, col);
+        boolean isHeader = tableLens.isRowHeader(row);
         Object cell = tableLens.getObject(row, col);
 
         Font cellFont = styleLayout.getFont(row, col);
@@ -172,6 +192,11 @@ public class PdfExporter extends AbstractExporter {
         ImageData imageData = ImageDataFactory.create(assembly.getImgData());
 
         Image image = new Image(imageData);
+
+        image.setWidth(assembly.getWidth());
+        image.setHeight(assembly.getHeight());
+        image.setFixedPosition((float) assembly.getPosition().getX(),
+                (float) assembly.getPosition().getY());
 
         document.add(image);
     }

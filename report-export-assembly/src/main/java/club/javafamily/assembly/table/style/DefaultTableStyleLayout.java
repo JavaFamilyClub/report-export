@@ -5,5 +5,5 @@ package club.javafamily.assembly.table.style;
  * @date 2022/9/7 上午10:29
  * @description
  */
-public class DefaultTableStyleLayout extends AbstractTableStyleLayout {
+public class DefaultTableStyleLayout extends TableStyleLayout {
 }

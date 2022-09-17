@@ -19,6 +19,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <jfreechart.version>1.5.3</jfreechart.version>
         <lombok.version>1.18.8</lombok.version>
+        <pdf.itext.version>7.2.3</pdf.itext.version>
     </properties>
 
     <dependencyManagement>
@@ -29,6 +30,13 @@
                 <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itext7-core</artifactId>
+                <type>pom</type>
+                <version>${pdf.itext.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

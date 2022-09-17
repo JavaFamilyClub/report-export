@@ -1,11 +1,15 @@
 package club.javafamily.exporter.pdf.utils;
 
+import club.javafamily.constants.StyleLayoutConstants;
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.io.font.constants.FontStyles;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 
 import java.awt.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Jack Li
@@ -14,12 +18,23 @@ import java.io.IOException;
  */
 public class PdfUtils {
 
+   private PdfUtils() {
+   }
+
+   static {
+      PdfFontFactory.registerSystemDirectories();
+   }
+
    /**
     * Convert awt's color to iText's color.
     * @param color awt's color.
     * @return iText's color
     */
-   public static DeviceRgb convertColor(java.awt.Color color) {
+   public static com.itextpdf.kernel.colors.Color convertColor(java.awt.Color color) {
+      if(color == null) {
+         color = StyleLayoutConstants.WHITE;
+      }
+
       return new DeviceRgb(color);
    }
 
@@ -38,6 +53,14 @@ public class PdfUtils {
 //         LOGGER.warn("Registered font is not found! {}", font.getFontName());
 //      }
 
-      return PdfFontFactory.createFont(font.getFontName());
+      if(font == null) {
+         font = StyleLayoutConstants.DEFAULT_TEXT_FONT;
+      }
+
+      PdfFont pdfFont = PdfFontFactory.createRegisteredFont(font.getName(), PdfEncodings.IDENTITY_H,
+              PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED,
+              font.isBold() ? FontStyles.BOLD : FontStyles.NORMAL);
+
+      return pdfFont;
    }
 }

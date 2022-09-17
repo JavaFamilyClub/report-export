@@ -3,10 +3,12 @@ package club.javafamily.exporter;
 import club.javafamily.assembly.Assembly;
 import club.javafamily.assembly.report.ReportSheet;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-public abstract class AbstractExporter implements Exporter {
+public abstract class AbstractExporter implements Exporter, Closeable {
 
     protected ReportSheet reportSheet;
     protected OutputStream out;
@@ -47,4 +49,13 @@ public abstract class AbstractExporter implements Exporter {
         out.flush();
     }
 
+    @Override
+    public void close() throws IOException {
+        try {
+            completeExport();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Resource close error!", e);
+        }
+    }
 }

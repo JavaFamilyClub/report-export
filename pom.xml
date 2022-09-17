@@ -63,6 +63,8 @@
         <slf4j.version>1.7.30</slf4j.version>
         <jfreechart.version>1.5.3</jfreechart.version>
         <lombok.version>1.18.8</lombok.version>
+        <itext.asian.version>5.2.0</itext.asian.version>
+        <pdf.itext.version>7.2.3</pdf.itext.version>
     </properties>
 
     <dependencyManagement>
@@ -156,6 +158,19 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itext7-core</artifactId>
+                <type>pom</type>
+                <version>${pdf.itext.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itext-asian</artifactId>
+                <version>${itext.asian.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

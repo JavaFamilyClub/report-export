@@ -27,20 +27,25 @@ public interface StyleLayoutConstants extends Serializable {
     /**
      * 默认文本字体
      */
-    Font DEFAULT_TEXT_FONT = new Font("Times New Roman", Font.PLAIN, 14);
+    Font DEFAULT_TEXT_FONT = new Font("仿宋", Font.PLAIN, 14);
 
     /**
      * Default header text font.
      */
-   Font DEFAULT_HEADER_FONT = new Font("Times New Roman", Font.BOLD, 14);
+   Font DEFAULT_HEADER_FONT = new Font("仿宋", Font.BOLD, 14);
 
     /**
      * 默认背景色
      */
-    Color DEFAULT_BG = Color.WHITE;
+    Color WHITE = Color.WHITE;
+
+    /**
+     * 默认背景色
+     */
+    Color DEFAULT_BG = WHITE;
 
     /**
      * 默认 Insets
      */
-    FloatInsets DEFAULT_INSETS = new FloatInsets(0, 0, 0, 0);
+    FloatInsets DEFAULT_INSETS = new FloatInsets(10, 10, 10, 10);
 }
