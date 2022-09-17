@@ -22,9 +22,9 @@
     </licenses>
     <!-- SCM信息 -> git在github上托管 -->
     <scm>
-        <url>https://github.com/JavaFamilyClub/notification-manager</url>
-        <connection>scm:git:git://github.com/JavaFamilyClub/notification-manager.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/JavaFamilyClub/notification-manager.git</developerConnection>
+        <url>https://github.com/JavaFamilyClub/report-export</url>
+        <connection>scm:git:git://github.com/JavaFamilyClub/report-export.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/JavaFamilyClub/report-export.git</developerConnection>
     </scm>
 
     <!-- 开发者信息 -->
@@ -57,6 +57,7 @@
         <jdk.version>1.8</jdk.version>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <maven.compile.plugin.version>3.6.0</maven.compile.plugin.version>
 
         <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
         <slf4j.version>1.7.30</slf4j.version>
