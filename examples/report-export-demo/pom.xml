@@ -55,6 +55,27 @@
             <artifactId>report-export-exporter-main</artifactId>
             <version>${javafamily.reportexport.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>club.javafamily</groupId>
+            <artifactId>report-export-exporter-pdf</artifactId>
+            <version>${javafamily.reportexport.version}</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>javafamily-central-snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

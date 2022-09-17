@@ -59,4 +59,5 @@ public abstract class AbstractTableLens implements TableFilter, EditableLens {
    public int getColCount() {
       return colCount;
    }
+
 }
