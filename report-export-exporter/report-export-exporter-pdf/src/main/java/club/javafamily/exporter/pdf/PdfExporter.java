@@ -8,6 +8,7 @@ import club.javafamily.assembly.report.style.ReportSheetStyleLayout;
 import club.javafamily.assembly.table.TableAssembly;
 import club.javafamily.assembly.table.style.TableStyleLayout;
 import club.javafamily.assembly.text.TextAssembly;
+import club.javafamily.common.DoublePoint;
 import club.javafamily.common.FloatInsets;
 import club.javafamily.enums.ExportType;
 import club.javafamily.exporter.AbstractExporter;
@@ -22,13 +23,21 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.IPropertyContainer;
+import com.itextpdf.layout.borders.DashedBorder;
+import com.itextpdf.layout.borders.FixedDashedBorder;
+import com.itextpdf.layout.borders.InsetBorder;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.layout.LayoutPosition;
 import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.Property;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 
+import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.io.OutputStream;
 import java.util.Collections;
@@ -98,10 +107,6 @@ public class PdfExporter extends AbstractExporter {
 
         Table table = new Table(colCount);
 
-        table.setFixedPosition((float) assembly.getPosition().getX(),
-                (float) assembly.getPosition().getY(),
-                UnitValue.createPercentValue(100));
-
         // 指定 table 相对 Document 的宽度.
         // <code>UnitValue.createPercentValue(100)</code> 表示 100%(排除页边距).
         table.setTextAlignment(TextAlignment.CENTER)
@@ -113,6 +118,20 @@ public class PdfExporter extends AbstractExporter {
                 fillCellData(table, assembly, i, j);
             }
         }
+
+        table.setHeight(assembly.getHeight());
+
+        DoublePoint position = getAbsolutePosition(assembly);
+//        table.setFixedPosition((float) position.getX(),
+//                PdfUtils.pxToPt((float) position.getY()),
+//                assembly.getWidth()
+//        );
+//        useAbsolute(table);
+        table.setFixedPosition((float) position.getX(),
+                (float) position.getY(),
+                UnitValue.createPercentValue(100));
+
+        table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
         // 将 table 写入 Document
         document.add(table);
@@ -168,6 +187,8 @@ public class PdfExporter extends AbstractExporter {
         // create cell
         Cell pdfCell = new Cell().add(text);
 
+        pdfCell.setHeight(20);
+
         pdfCell.setFont(pdfFont)
                 .setBorder(new SolidBorder(new DeviceRgb(Color.BLACK), 0.5f))
                 .setBackgroundColor(PdfUtils.convertColor(cellBG));
@@ -195,10 +216,33 @@ public class PdfExporter extends AbstractExporter {
 
         image.setWidth(assembly.getWidth());
         image.setHeight(assembly.getHeight());
-        image.setFixedPosition((float) assembly.getPosition().getX(),
-                (float) assembly.getPosition().getY());
+
+        DoublePoint position = getAbsolutePosition(assembly);
+        image.setFixedPosition((float) position.getX(), (float) position.getY());
+        useAbsolute(image);
 
         document.add(image);
+    }
+
+    /**
+     * 使用绝对定位
+     * @param container container
+     */
+    private void useAbsolute(IPropertyContainer container) {
+        container.setProperty(Property.POSITION, LayoutPosition.ABSOLUTE);
+    }
+
+    /**
+     * 转化为绝对定位
+     * @param assembly assembly
+     * @return 绝对定位的位置
+     */
+    private DoublePoint getAbsolutePosition(Assembly assembly) {
+        ReportSheetStyleLayout reportStyleLayout = reportSheet.getStyleLayout();
+
+        return new DoublePoint(PdfUtils.pxToPt((float) assembly.getPosition().getX()),
+                reportSheet.getHeight() - reportStyleLayout.getBottom()
+                        - (float) assembly.getPosition().getY() - assembly.getHeight());
     }
 
     @Override

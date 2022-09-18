@@ -31,9 +31,14 @@ public class PdfExportTests {
     @BeforeEach
     void init() throws Exception {
         initTableLens();
+
+        initReport();
+
         initTable();
         initImage();
-        initReport();
+
+        reportSheet.addAssembly(table);
+        reportSheet.addAssembly(image);
     }
 
     @Test
@@ -73,9 +78,6 @@ public class PdfExportTests {
         ReportSheetStyleLayout reportSheetStyleLayout = new ReportSheetStyleLayout();
         reportSheet = new ReportSheet();
         reportSheet.setStyleLayout(reportSheetStyleLayout);
-
-        reportSheet.addAssembly(table);
-        reportSheet.addAssembly(image);
     }
 
     private void initTable() {
@@ -92,7 +94,10 @@ public class PdfExportTests {
         table.setLens(lens);
         table.setStyleLayout(tableStyleLayout);
 
-        table.setPosition(new DoublePoint(5, 500));
+        table.setPosition(new DoublePoint(0, 85));
+
+        table.setHeight(120);
+        table.setWidth((float) (reportSheet.getWidth() * 0.9));
     }
 
     private void initImage() throws IOException {
@@ -102,9 +107,9 @@ public class PdfExportTests {
         byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
         image.setImgData(bytes);
 
-        image.setPosition(new DoublePoint(5, 5));
-        image.setWidth(50);
-        image.setHeight(50);
+        image.setPosition(new DoublePoint(0, 0));
+        image.setWidth(80);
+        image.setHeight(80);
     }
 
 }

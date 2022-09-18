@@ -63,4 +63,13 @@ public class PdfUtils {
 
       return pdfFont;
    }
+
+   /**
+    * convert px to pt
+    * @param px px
+    * @return pt
+    */
+   public static float pxToPt(float px) {
+      return px * 3 / 4;
+   }
 }
