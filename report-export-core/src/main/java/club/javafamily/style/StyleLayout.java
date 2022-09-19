@@ -42,6 +42,14 @@ public interface StyleLayout extends StyleLayoutConstants {
     Font getFont(int row, int col);
 
     /**
+     * get text color
+     * @param row row index
+     * @param col col index
+     * @return Color
+     */
+    Color getFontColor(int row, int col);
+
+    /**
      * title font
      * @return font
      */

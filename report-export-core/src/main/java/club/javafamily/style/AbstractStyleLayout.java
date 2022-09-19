@@ -17,6 +17,7 @@ public class AbstractStyleLayout implements StyleLayout {
    protected IndexedSparseMatrix alignMatrix = new IndexedSparseMatrix();
    protected IndexedSparseMatrix insetsMatrix = new IndexedSparseMatrix();
    protected IndexedSparseMatrix fontMatrix = new IndexedSparseMatrix();
+   protected IndexedSparseMatrix textColorMatrix = new IndexedSparseMatrix();
    protected Font titleFont;
    protected Color titleFontColor;
 
@@ -50,10 +51,33 @@ public class AbstractStyleLayout implements StyleLayout {
     */
    @Override
    public Font getFont(int row, int col) {
-      Font val = (Font) fontMatrix.get(row, col);
+      Font val = (Font) fontMatrix.getByLevel(row, col);
 
       return (val == null && styleLayout != null)
               ? styleLayout.getFont(row, col) : val;
+   }
+
+   public void setFont(int row, int col, Font val) {
+      fontMatrix.set(row, col, val);
+   }
+
+   /**
+    * get text color
+    *
+    * @param row row index
+    * @param col col index
+    * @return Color
+    */
+   @Override
+   public Color getFontColor(int row, int col) {
+      Color val = (Color) textColorMatrix.getByLevel(row, col);
+
+      return (val == null && styleLayout != null)
+              ? styleLayout.getFontColor(row, col) : val;
+   }
+
+   public void setFontColor(int row, int col, Color color) {
+      textColorMatrix.set(row, col, color);
    }
 
    @Override

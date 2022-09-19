@@ -8,6 +8,8 @@ import club.javafamily.assembly.report.style.ReportSheetStyleLayout;
 import club.javafamily.assembly.table.TableAssembly;
 import club.javafamily.assembly.table.style.TableStyleLayout;
 import club.javafamily.assembly.text.TextAssembly;
+import club.javafamily.assembly.text.lens.TextTableLens;
+import club.javafamily.assembly.text.style.TextStyleLayout;
 import club.javafamily.common.DoublePoint;
 import club.javafamily.common.FloatInsets;
 import club.javafamily.enums.ExportType;
@@ -39,6 +41,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
@@ -187,7 +190,7 @@ public class PdfExporter extends AbstractExporter {
         // create cell
         Cell pdfCell = new Cell().add(text);
 
-        pdfCell.setHeight(20);
+        pdfCell.setHeight(styleLayout.getHeight(row, col));
 
         pdfCell.setFont(pdfFont)
                 .setBorder(new SolidBorder(new DeviceRgb(Color.BLACK), 0.5f))
@@ -246,8 +249,26 @@ public class PdfExporter extends AbstractExporter {
     }
 
     @Override
-    public void exportText(TextAssembly assembly) {
+    public void exportText(TextAssembly assembly) throws Exception {
         assert document != null;
+
+        TextTableLens lens = assembly.getTextTableLens();
+        TextStyleLayout styleLayout = assembly.getStyleLayout();
+
+        Font cellFont = styleLayout.getTextFont();
+//        Color cellBG = styleLayout.getBackground(row, col);
+        PdfFont pdfFont = PdfUtils.convertFont(cellFont);
+
+        Paragraph text = new Paragraph(lens.getText());
+        text.setFont(pdfFont);
+        text.setFontColor(PdfUtils.convertColor(styleLayout.getTextColor()));
+
+        DoublePoint position = getAbsolutePosition(assembly);
+        text.setFixedPosition((float) position.getX(), (float) position.getY(),
+                UnitValue.createPercentValue(100));
+        useAbsolute(text);
+
+        document.add(text);
     }
 
     @Override

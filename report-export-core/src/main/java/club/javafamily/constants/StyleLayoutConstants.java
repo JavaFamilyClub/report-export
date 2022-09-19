@@ -25,6 +25,11 @@ public interface StyleLayoutConstants extends Serializable {
     int ASSEMBLY_HEIGHT_AUTO = -1;
 
     /**
+     * 默认的表格行高
+     */
+    float DEFAULT_TABLE_ROW_HEIGHT = 20;
+
+    /**
      * 默认文本字体
      */
     Font DEFAULT_TEXT_FONT = new Font("仿宋", Font.PLAIN, 14);
