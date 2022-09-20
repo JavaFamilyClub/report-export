@@ -32,12 +32,12 @@ public interface StyleLayoutConstants extends Serializable {
     /**
      * 默认文本字体
      */
-    Font DEFAULT_TEXT_FONT = new Font("仿宋", Font.PLAIN, 14);
+    Font DEFAULT_TEXT_FONT = new Font("simsun", Font.PLAIN, 14);
 
     /**
      * Default header text font.
      */
-   Font DEFAULT_HEADER_FONT = new Font("仿宋", Font.BOLD, 14);
+   Font DEFAULT_HEADER_FONT = new Font("simhei", Font.BOLD, 14);
 
     /**
      * 默认背景色

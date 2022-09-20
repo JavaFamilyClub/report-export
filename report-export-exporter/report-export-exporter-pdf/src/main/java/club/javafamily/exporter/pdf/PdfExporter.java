@@ -117,12 +117,16 @@ public class PdfExporter extends AbstractExporter {
 
         // 填充 table
         for(int i = 0; i < tableLens.getRowCount(); i++) {
+            table.startNewRow();
+
             for(int j = 0; j < colCount; j++) {
                 fillCellData(table, assembly, i, j);
             }
         }
 
-        table.setHeight(assembly.getHeight());
+        if(assembly.getHeight() >= 0) {
+            table.setHeight(assembly.getHeight());
+        }
 
         DoublePoint position = getAbsolutePosition(assembly);
 //        table.setFixedPosition((float) position.getX(),
@@ -133,6 +137,8 @@ public class PdfExporter extends AbstractExporter {
         table.setFixedPosition((float) position.getX(),
                 (float) position.getY(),
                 UnitValue.createPercentValue(100));
+        useAbsolute(table);
+
 
         table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
@@ -242,10 +248,13 @@ public class PdfExporter extends AbstractExporter {
      */
     private DoublePoint getAbsolutePosition(Assembly assembly) {
         ReportSheetStyleLayout reportStyleLayout = reportSheet.getStyleLayout();
+        float height = assembly.getHeight();
+
+        height = height > 0 ? height : 0;
 
         return new DoublePoint(PdfUtils.pxToPt((float) assembly.getPosition().getX()),
                 reportSheet.getHeight() - reportStyleLayout.getBottom()
-                        - (float) assembly.getPosition().getY() - assembly.getHeight());
+                        - (float) assembly.getPosition().getY() - height);
     }
 
     @Override

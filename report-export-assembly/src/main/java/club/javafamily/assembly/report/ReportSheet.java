@@ -13,7 +13,7 @@ public class ReportSheet extends AbstractAssembly<ReportSheetStyleLayout> {
 
     private List<Assembly<?>> assemblies = new ArrayList<>();
 
-    private final PageSize pageSize = PageSize.A4;
+    private PageSize pageSize = PageSize.A4;
 
     /**
      * 获取 assemblies
@@ -39,6 +39,22 @@ public class ReportSheet extends AbstractAssembly<ReportSheetStyleLayout> {
     @Override
     public float getHeight() {
         return pageSize.getHeight();
+    }
+
+    /**
+     * getting page size
+     * @return size
+     */
+    public PageSize getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * setting page size
+     * @return size
+     */
+    public void setPageSize(PageSize size) {
+        this.pageSize = size;
     }
 
     public void setWidth(float width) {

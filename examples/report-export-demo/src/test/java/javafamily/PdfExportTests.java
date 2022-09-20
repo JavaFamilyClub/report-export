@@ -9,18 +9,24 @@ import club.javafamily.assembly.table.style.TableStyleLayout;
 import club.javafamily.assembly.text.TextAssembly;
 import club.javafamily.assembly.text.style.TextStyleLayout;
 import club.javafamily.common.DoublePoint;
+import club.javafamily.common.PageSize;
+import club.javafamily.constants.StyleLayoutConstants;
 import club.javafamily.exporter.pdf.PdfExporter;
 import club.javafamily.lens.DefaultTableLens;
 import club.javafamily.lens.TableLens;
+import club.javafamily.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
+import javax.swing.text.StyleConstants;
 import java.awt.*;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Slf4j
 public class PdfExportTests {
@@ -73,7 +79,31 @@ public class PdfExportTests {
         log.info("Export Success!");
     }
 
-    private void initTableLens() {
+    private void initTableLens() throws Exception {
+        ClassPathResource resource = new ClassPathResource("data_Sep20_H17.txt");
+
+        List<Object[]> data = new ArrayList<>();
+
+        try(InputStream in = resource.getInputStream();
+            InputStreamReader isr = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(isr))
+        {
+            br.lines().forEach(line -> {
+                String[] items = line.split(",");
+
+                if(data.size() > 0) {
+                    Date time = DateUtil.parseDateTime(items[0]);
+                    items[0] = time.getHours() + "";
+                }
+
+                data.add(items);
+            });
+        }
+
+        lens = new DefaultTableLens(data);
+    }
+
+    private void initMockTableLens() throws Exception {
         Object[][] data = new Object[5][5];
 
         for (int row = 0; row < data.length; row++) {
@@ -94,6 +124,9 @@ public class PdfExportTests {
         ReportSheetStyleLayout reportSheetStyleLayout = new ReportSheetStyleLayout();
         reportSheet = new ReportSheet();
         reportSheet.setStyleLayout(reportSheetStyleLayout);
+
+        // rotate
+        reportSheet.setPageSize(PageSize.A4.rotate());
     }
 
     private void initTable() {
@@ -101,7 +134,7 @@ public class PdfExportTests {
 
         tableStyleLayout.setBackground(3, 3, Color.RED);
 
-        tableStyleLayout.setRowBackground(0, Color.lightGray);
+        tableStyleLayout.setRowBackground(0, new Color(251,192,75));
 
         tableStyleLayout.setColBackground(2, Color.pink);
         tableStyleLayout.setColBackground(4, Color.ORANGE);
@@ -110,9 +143,9 @@ public class PdfExportTests {
         table.setLens(lens);
         table.setStyleLayout(tableStyleLayout);
 
-        table.setPosition(new DoublePoint(10, 140));
+        table.setPosition(new DoublePoint(10, 160));
 
-        table.setHeight(120);
+//        table.setHeight(120);
         table.setWidth((float) (reportSheet.getWidth()));
     }
 
@@ -123,34 +156,44 @@ public class PdfExportTests {
         byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
         image.setImgData(bytes);
 
-        image.setPosition(new DoublePoint(0, 0));
+        image.setPosition(new DoublePoint(0, 10));
         image.setWidth(80);
         image.setHeight(80);
     }
 
     private void initText() {
-        unit = new TextAssembly("JavaFamily 海洋预报中心");
+        unit = new TextAssembly("测试海洋预报中心");
         TextStyleLayout styleLayout1 = unit.getStyleLayout();
-        styleLayout1.setTextColor(new Color(102, 204, 255));
+        styleLayout1.setTextColor(new Color(17,125,204));
 
-        unit.setPosition(new DoublePoint(90, 0));
+        unit.setPosition(new DoublePoint(120, 70));
 
         unitEn = new TextAssembly("JavaFamily Sea Marine Forecasting Center, SOA");
-        unitEn.setStyleLayout(styleLayout1);
+        TextStyleLayout styleLayout2 = unitEn.getStyleLayout();
+        styleLayout2.setTextColor(new Color(17,125,204));
+        styleLayout2.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
 
-        unitEn.setPosition(new DoublePoint(90, 0));
+        unitEn.setPosition(new DoublePoint(120, 90));
 
         projectName = new TextAssembly("\"神泉二项目\"施工海域海洋预报");
 
-        projectName.setPosition(new DoublePoint(0, 90));
+        projectName.setPosition(new DoublePoint(20, 120));
+
+        TextStyleLayout styleLayout = projectName.getStyleLayout();
+        styleLayout.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
+        styleLayout.setTextColor(Color.black);
 
         pointPosition = new TextAssembly("预报点位: 120°52′E, 27°21′N");
 
-        pointPosition.setPosition(new DoublePoint(0, 120));
+        pointPosition.setPosition(new DoublePoint(20, 150));
 
-        publishTime = new TextAssembly("发布时间: 2022-05-13, 08时 ");
+        pointPosition.setStyleLayout(styleLayout);
 
-        publishTime.setPosition(new DoublePoint(500 , 120));
+        publishTime = new TextAssembly("发布时间: 2022-09-20, 17时 ");
+
+        publishTime.setPosition(new DoublePoint(500 , 150));
+
+        publishTime.setStyleLayout(styleLayout);
     }
 
 

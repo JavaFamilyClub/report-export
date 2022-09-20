@@ -9,7 +9,6 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 
 import java.awt.*;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Jack Li
