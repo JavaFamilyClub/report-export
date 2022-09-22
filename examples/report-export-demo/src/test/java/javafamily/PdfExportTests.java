@@ -21,12 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
-import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class PdfExportTests {
@@ -43,30 +41,15 @@ public class PdfExportTests {
     private TextAssembly pointPosition;
     private TextAssembly publishTime;
 
-    @BeforeEach
-    void init() throws Exception {
-        initTableLens();
-
-        initReport();
-
-        initTable();
-        initImage();
-
-        initText();
-
-        reportSheet.addAssembly(table);
-        reportSheet.addAssembly(image);
-
-        reportSheet.addAssembly(unit);
-        reportSheet.addAssembly(unitEn);
-        reportSheet.addAssembly(projectName);
-        reportSheet.addAssembly(pointPosition);
-        reportSheet.addAssembly(publishTime);
-    }
-
     @Test
     void testExport() throws Exception {
-        FileOutputStream out = new FileOutputStream("./target/demo.pdf");
+       File file = new File("./target/demo.pdf");
+
+       if(file.exists()) {
+          file.delete();
+       }
+
+        FileOutputStream out = new FileOutputStream(file);
 
         try(PdfExporter pdfExporter = new PdfExporter()) {
             pdfExporter.prepareExport(reportSheet, out);
@@ -78,6 +61,28 @@ public class PdfExportTests {
 
         log.info("Export Success!");
     }
+
+   @BeforeEach
+   void init() throws Exception {
+      initTableLens();
+
+      initReport();
+
+      initTable();
+      initImage();
+
+      initText();
+
+      reportSheet.addAssembly(image);
+
+      reportSheet.addAssembly(unit);
+      reportSheet.addAssembly(unitEn);
+      reportSheet.addAssembly(projectName);
+      reportSheet.addAssembly(pointPosition);
+      reportSheet.addAssembly(publishTime);
+
+      reportSheet.addAssembly(table);
+   }
 
     private void initTableLens() throws Exception {
         ClassPathResource resource = new ClassPathResource("data_Sep20_H17.txt");

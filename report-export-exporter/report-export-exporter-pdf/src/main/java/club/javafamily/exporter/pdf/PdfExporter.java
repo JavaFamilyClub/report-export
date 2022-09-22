@@ -26,22 +26,13 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.IPropertyContainer;
-import com.itextpdf.layout.borders.DashedBorder;
-import com.itextpdf.layout.borders.FixedDashedBorder;
-import com.itextpdf.layout.borders.InsetBorder;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.layout.LayoutPosition;
-import com.itextpdf.layout.properties.HorizontalAlignment;
-import com.itextpdf.layout.properties.Property;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.*;
 
-import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
@@ -110,6 +101,8 @@ public class PdfExporter extends AbstractExporter {
 
         Table table = new Table(colCount);
 
+        table.setWidth(reportSheet.getWidth());
+
         // 指定 table 相对 Document 的宽度.
         // <code>UnitValue.createPercentValue(100)</code> 表示 100%(排除页边距).
         table.setTextAlignment(TextAlignment.CENTER)
@@ -137,8 +130,7 @@ public class PdfExporter extends AbstractExporter {
         table.setFixedPosition((float) position.getX(),
                 (float) position.getY(),
                 UnitValue.createPercentValue(100));
-        useAbsolute(table);
-
+//        useAbsolute(table);
 
         table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
