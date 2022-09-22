@@ -48,6 +48,7 @@ public class PdfExporter extends AbstractExporter {
      * pdf doc
      */
     private Document document;
+    private PdfPage currentPage;
 
     @Override
     public List<ExportType> supportedTypes() {
@@ -67,7 +68,9 @@ public class PdfExporter extends AbstractExporter {
         // 创建一个指向文件或者 out 流的 PDFWriter, 该 writer 会监听 PdfDocument
         PdfWriter pdfWriter = new PdfWriter(out);
         // 创建 PdfDocument 代表要创建的 PDF 文件, 管理要写入的内容和相关信息
-        PdfDocument pdf = new PdfDocument(pdfWriter);
+        final StampingProperties properties = new StampingProperties();
+        properties.useAppendMode();
+        PdfDocument pdf = new PdfDocument(pdfWriter, properties);
         PageSize pageSize = new PageSize(report.getWidth(), report.getHeight());
         pageSize.setX(report.getX())
                 .setY(report.getY());
@@ -76,6 +79,8 @@ public class PdfExporter extends AbstractExporter {
 //        final PdfPage currentPage = pdf.addNewPage(pageSize);
 
         document = new Document(pdf, pageSize);
+
+//        currentPage = pdf.addNewPage(pageSize);
 
         ReportSheetStyleLayout styleLayout = report.getStyleLayout();
 
@@ -95,31 +100,41 @@ public class PdfExporter extends AbstractExporter {
         assert document != null;
 
         TableLens tableLens = assembly.getTableLens();
+
+        Div container = new Div();
+        container.setWidth(UnitValue.createPercentValue(100));
+
         int colCount = tableLens.getColCount();
 
-        writeTitle(document, assembly);
+//        writeTitle(container, assembly);
+        writeTitle(null, assembly);
 
         Table table = new Table(colCount);
 
-        table.setWidth(reportSheet.getWidth());
+        table.setWidth(UnitValue.createPercentValue(100));
 
         // 指定 table 相对 Document 的宽度.
         // <code>UnitValue.createPercentValue(100)</code> 表示 100%(排除页边距).
-        table.setTextAlignment(TextAlignment.CENTER)
-                .setHorizontalAlignment(HorizontalAlignment.CENTER);
+        table.setTextAlignment(TextAlignment.CENTER);
+        table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
         // 填充 table
         for(int i = 0; i < tableLens.getRowCount(); i++) {
-            table.startNewRow();
-
             for(int j = 0; j < colCount; j++) {
                 fillCellData(table, assembly, i, j);
             }
+
+            if(i < tableLens.getRowCount() - 1) {
+                table.startNewRow();
+            }
         }
 
-        if(assembly.getHeight() >= 0) {
-            table.setHeight(assembly.getHeight());
-        }
+//        if(assembly.getHeight() >= 0) {
+//            table.setHeight(assembly.getHeight());
+//        }
+
+        // 将 table 写入 Document
+        container.add(table);
 
         DoublePoint position = getAbsolutePosition(assembly);
 //        table.setFixedPosition((float) position.getX(),
@@ -127,18 +142,22 @@ public class PdfExporter extends AbstractExporter {
 //                assembly.getWidth()
 //        );
 //        useAbsolute(table);
-        table.setFixedPosition((float) position.getX(),
-                (float) position.getY(),
-                UnitValue.createPercentValue(100));
-//        useAbsolute(table);
+//        div.setFixedPosition((float) position.getX(),
+//                (float) position.getY(),
+//                UnitValue.createPercentValue(100));
+//        useFixed(div, assembly);
+//        useAbsolute(container, assembly);
+        table.setMarginTop(assembly.getY());
+        table.setMarginLeft(assembly.getX());
 
-        table.setHorizontalAlignment(HorizontalAlignment.CENTER);
+//        final DoublePoint position2 = assembly.getPosition();
+//        table.setProperty(Property.LEFT, position2.getX());
+//        table.setProperty(Property.TOP, position2.getY());
 
-        // 将 table 写入 Document
-        document.add(table);
+        document.add(container);
     }
 
-    public static void writeTitle(Document doc, Assembly assembly) throws Exception {
+    public void writeTitle(Paragraph container, Assembly assembly) throws Exception {
         if (assembly.getTitle() == null) {
             return;
         }
@@ -160,7 +179,7 @@ public class PdfExporter extends AbstractExporter {
             p.setFontColor(PdfUtils.convertColor(titleFontColor));
         }
 
-        doc.add(p);
+        document.add(p);
     }
 
     /**
@@ -218,11 +237,13 @@ public class PdfExporter extends AbstractExporter {
         image.setWidth(assembly.getWidth());
         image.setHeight(assembly.getHeight());
 
-        DoublePoint position = getAbsolutePosition(assembly);
-        image.setFixedPosition((float) position.getX(), (float) position.getY());
-        useAbsolute(image);
+//        DoublePoint position = getAbsolutePosition(assembly);
+//        image.setFixedPosition((float) position.getX(),
+//           (float) position.getY());
+        useAbsolute(image, assembly);
 
         document.add(image);
+        document.flush();
     }
 
     /**
@@ -231,6 +252,30 @@ public class PdfExporter extends AbstractExporter {
      */
     private void useAbsolute(IPropertyContainer container) {
         container.setProperty(Property.POSITION, LayoutPosition.ABSOLUTE);
+    }
+
+    /**
+     * 使用绝对定位
+     * @param container container
+     */
+    private void useAbsolute(IPropertyContainer container, Assembly assembly) {
+        container.setProperty(Property.POSITION, LayoutPosition.ABSOLUTE);
+
+        final DoublePoint position = assembly.getPosition();
+        container.setProperty(Property.LEFT, position.getX());
+        container.setProperty(Property.TOP, position.getY());
+    }
+
+    /**
+     * 使用绝对定位
+     * @param container container
+     */
+    private void useFixed(IPropertyContainer container, Assembly assembly) {
+        container.setProperty(Property.POSITION, LayoutPosition.FIXED);
+
+        final DoublePoint position = assembly.getPosition();
+        container.setProperty(Property.LEFT, position.getX());
+        container.setProperty(Property.TOP, position.getY());
     }
 
     /**
@@ -264,12 +309,13 @@ public class PdfExporter extends AbstractExporter {
         text.setFont(pdfFont);
         text.setFontColor(PdfUtils.convertColor(styleLayout.getTextColor()));
 
-        DoublePoint position = getAbsolutePosition(assembly);
-        text.setFixedPosition((float) position.getX(), (float) position.getY(),
-                UnitValue.createPercentValue(100));
-        useAbsolute(text);
+//        DoublePoint position = getAbsolutePosition(assembly);
+//        text.setFixedPosition((float) position.getX(), (float) position.getY(),
+//                UnitValue.createPercentValue(100));
+        useAbsolute(text, assembly);
 
         document.add(text);
+        document.flush();
     }
 
     @Override

@@ -29,38 +29,40 @@ import java.util.*;
 @Slf4j
 public class PdfExportTests {
 
-    private TableLens lens;
-    private TableAssembly table;
-    private ImageAssembly image;
-    private ReportSheet reportSheet;
+   private TableLens lens;
+   private TableAssembly table;
+   private ImageAssembly image;
+   private ReportSheet reportSheet;
 
-    private TextAssembly unit;
-    private TextAssembly unitEn;
+   private TextAssembly unit;
+   private TextAssembly unitEn;
 
-    private TextAssembly projectName;
-    private TextAssembly pointPosition;
-    private TextAssembly publishTime;
+   private TextAssembly projectName;
+   private TextAssembly pointPosition;
+   private TextAssembly publishTime;
 
-    @Test
-    void testExport() throws Exception {
-       File file = new File("./target/demo.pdf");
+   private TextAssembly auth;
 
-       if(file.exists()) {
-          file.delete();
-       }
+   @Test
+   void testExport() throws Exception {
+      File file = new File("./target/demo.pdf");
 
-        FileOutputStream out = new FileOutputStream(file);
+      if(file.exists()) {
+         file.delete();
+      }
 
-        try(PdfExporter pdfExporter = new PdfExporter()) {
-            pdfExporter.prepareExport(reportSheet, out);
-            pdfExporter.export(reportSheet);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+      FileOutputStream out = new FileOutputStream(file);
 
-        log.info("Export Success!");
-    }
+      try(PdfExporter pdfExporter = new PdfExporter()) {
+         pdfExporter.prepareExport(reportSheet, out);
+         pdfExporter.export(reportSheet);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      log.info("Export Success!");
+   }
 
    @BeforeEach
    void init() throws Exception {
@@ -82,124 +84,142 @@ public class PdfExportTests {
       reportSheet.addAssembly(publishTime);
 
       reportSheet.addAssembly(table);
+
+      reportSheet.addAssembly(auth);
    }
 
-    private void initTableLens() throws Exception {
-        ClassPathResource resource = new ClassPathResource("data_Sep20_H17.txt");
+   private void initTableLens() throws Exception {
+      ClassPathResource resource = new ClassPathResource("data_Sep20_H17.txt");
 
-        List<Object[]> data = new ArrayList<>();
+      List<Object[]> data = new ArrayList<>();
 
-        try(InputStream in = resource.getInputStream();
-            InputStreamReader isr = new InputStreamReader(in);
-            BufferedReader br = new BufferedReader(isr))
-        {
-            br.lines().forEach(line -> {
-                String[] items = line.split(",");
+      try(InputStream in = resource.getInputStream();
+          InputStreamReader isr = new InputStreamReader(in);
+          BufferedReader br = new BufferedReader(isr))
+      {
+         br.lines().forEach(line -> {
+            String[] items = line.split(",");
 
-                if(data.size() > 0) {
-                    Date time = DateUtil.parseDateTime(items[0]);
-                    items[0] = time.getHours() + "";
-                }
-
-                data.add(items);
-            });
-        }
-
-        lens = new DefaultTableLens(data);
-    }
-
-    private void initMockTableLens() throws Exception {
-        Object[][] data = new Object[5][5];
-
-        for (int row = 0; row < data.length; row++) {
-            for (int col = 0; col < data[row].length; col++) {
-                if(row == 0) {
-                    data[row][col] = "Header " + col;
-                }
-                else {
-                    data[row][col] = "第 " + row + " 行, 第 " + col + " 列";
-                }
+            if(data.size() > 0) {
+               Date time = DateUtil.parseDateTime(items[0]);
+               items[0] = time.getHours() + "";
             }
-        }
 
-        lens = new DefaultTableLens(data);
-    }
+            data.add(items);
+         });
+      }
 
-    private void initReport() {
-        ReportSheetStyleLayout reportSheetStyleLayout = new ReportSheetStyleLayout();
-        reportSheet = new ReportSheet();
-        reportSheet.setStyleLayout(reportSheetStyleLayout);
+      lens = new DefaultTableLens(data);
+   }
 
-        // rotate
-        reportSheet.setPageSize(PageSize.A4.rotate());
-    }
+   private void initMockTableLens() throws Exception {
+      Object[][] data = new Object[5][5];
 
-    private void initTable() {
-        TableStyleLayout tableStyleLayout = new DefaultTableStyleLayout();
+      for (int row = 0; row < data.length; row++) {
+         for (int col = 0; col < data[row].length; col++) {
+            if(row == 0) {
+               data[row][col] = "Header " + col;
+            }
+            else {
+               data[row][col] = "第 " + row + " 行, 第 " + col + " 列";
+            }
+         }
+      }
 
-        tableStyleLayout.setBackground(3, 3, Color.RED);
+      lens = new DefaultTableLens(data);
+   }
 
-        tableStyleLayout.setRowBackground(0, new Color(251,192,75));
+   private void initReport() {
+      ReportSheetStyleLayout reportSheetStyleLayout = new ReportSheetStyleLayout();
+      reportSheet = new ReportSheet();
+      reportSheet.setStyleLayout(reportSheetStyleLayout);
 
-        tableStyleLayout.setColBackground(2, Color.pink);
-        tableStyleLayout.setColBackground(4, Color.ORANGE);
+      // rotate
+      reportSheet.setPageSize(PageSize.A4.rotate());
+   }
 
-        table = new TableAssembly();
-        table.setLens(lens);
-        table.setStyleLayout(tableStyleLayout);
+   private void initTable() {
+      TableStyleLayout tableStyleLayout = new DefaultTableStyleLayout();
 
-        table.setPosition(new DoublePoint(10, 160));
+      for (int i = lens.getHeaderRowCount(); i < lens.getRowCount(); i++) {
+         if(Double.parseDouble((String) lens.getObject(i, 16)) > 16) {
+            tableStyleLayout.setBackground(i, 16, Color.RED);
+         }
+      }
 
-//        table.setHeight(120);
-        table.setWidth((float) (reportSheet.getWidth()));
-    }
+      tableStyleLayout.setRowBackground(0, new Color(242,193,97));
 
-    private void initImage() throws IOException {
-        image = new ImageAssembly();
+      tableStyleLayout.setColBackground(2, new Color(237, 220, 218));
+      tableStyleLayout.setColBackground(4, new Color(222, 230, 240));
 
-        ClassPathResource resource = new ClassPathResource("icon.ico");
-        byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-        image.setImgData(bytes);
+      tableStyleLayout.setColBackground(7, new Color(250, 240, 218));
+      tableStyleLayout.setColBackground(8, new Color(250, 240, 218));
+      tableStyleLayout.setColBackground(9, new Color(250, 240, 218));
+      tableStyleLayout.setColBackground(10, new Color(250, 240, 218));
 
-        image.setPosition(new DoublePoint(0, 10));
-        image.setWidth(80);
-        image.setHeight(80);
-    }
+      tableStyleLayout.setColBackground(14, new Color(222, 230, 240));
+      tableStyleLayout.setColBackground(18, new Color(237, 220, 218));
 
-    private void initText() {
-        unit = new TextAssembly("测试海洋预报中心");
-        TextStyleLayout styleLayout1 = unit.getStyleLayout();
-        styleLayout1.setTextColor(new Color(17,125,204));
+      table = new TableAssembly();
+      table.setLens(lens);
+      table.setStyleLayout(tableStyleLayout);
 
-        unit.setPosition(new DoublePoint(120, 70));
+      table.setPosition(new DoublePoint(0, 180));
 
-        unitEn = new TextAssembly("JavaFamily Sea Marine Forecasting Center, SOA");
-        TextStyleLayout styleLayout2 = unitEn.getStyleLayout();
-        styleLayout2.setTextColor(new Color(17,125,204));
-        styleLayout2.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
+      table.setWidth((float) (reportSheet.getWidth()));
+   }
 
-        unitEn.setPosition(new DoublePoint(120, 90));
+   private void initImage() throws IOException {
+      image = new ImageAssembly();
 
-        projectName = new TextAssembly("\"神泉二项目\"施工海域海洋预报");
+      ClassPathResource resource = new ClassPathResource("icon.ico");
+      byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
+      image.setImgData(bytes);
 
-        projectName.setPosition(new DoublePoint(20, 120));
+      image.setPosition(new DoublePoint(0, 10));
+      image.setWidth(80);
+      image.setHeight(80);
+   }
 
-        TextStyleLayout styleLayout = projectName.getStyleLayout();
-        styleLayout.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
-        styleLayout.setTextColor(Color.black);
+   private void initText() {
+      unit = new TextAssembly("测试海洋预报中心");
+      TextStyleLayout styleLayout1 = unit.getStyleLayout();
+      styleLayout1.setTextColor(new Color(17,125,204));
 
-        pointPosition = new TextAssembly("预报点位: 120°52′E, 27°21′N");
+      unit.setPosition(new DoublePoint(80, 45));
 
-        pointPosition.setPosition(new DoublePoint(20, 150));
+      unitEn = new TextAssembly("JavaFamily Sea Marine Forecasting Center, SOA");
+      TextStyleLayout styleLayout2 = unitEn.getStyleLayout();
+      styleLayout2.setTextColor(new Color(17,125,204));
+      styleLayout2.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
 
-        pointPosition.setStyleLayout(styleLayout);
+      unitEn.setPosition(new DoublePoint(80, 65));
 
-        publishTime = new TextAssembly("发布时间: 2022-09-20, 17时 ");
+      projectName = new TextAssembly("\"神泉二项目\"施工海域海洋预报");
 
-        publishTime.setPosition(new DoublePoint(500 , 150));
+      projectName.setPosition(new DoublePoint(20, 110));
 
-        publishTime.setStyleLayout(styleLayout);
-    }
+      TextStyleLayout styleLayout = projectName.getStyleLayout();
+      styleLayout.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
+      styleLayout.setTextColor(Color.black);
 
+      pointPosition = new TextAssembly("预报点位: 120°52′E, 27°21′N");
+
+      pointPosition.setPosition(new DoublePoint(20, 140));
+
+      pointPosition.setStyleLayout(styleLayout);
+
+      publishTime = new TextAssembly("发布时间: 2022-09-20, 17时 ");
+
+      publishTime.setPosition(new DoublePoint(500 , 140));
+
+      publishTime.setStyleLayout(styleLayout);
+
+      auth = new TextAssembly("-- JavaFamily 版权所有");
+
+      auth.setPosition(new DoublePoint(650, 320));
+
+      auth.setStyleLayout(styleLayout);
+   }
 
 }
