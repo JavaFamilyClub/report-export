@@ -10,7 +10,7 @@
 
     <properties>
         <javafamily.reportexport.version>0.0.1-SNAPSHOT</javafamily.reportexport.version>
-        <javafamily.utils.version>2.3.2-beta.4</javafamily.utils.version>
+        <javafamily.utils.version>2.3.2-SNAPSHOT</javafamily.utils.version>
 
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

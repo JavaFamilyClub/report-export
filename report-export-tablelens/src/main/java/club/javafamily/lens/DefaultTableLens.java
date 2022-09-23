@@ -24,6 +24,15 @@ public class DefaultTableLens extends AbstractFormatableTableLens {
         this.colCount = data.size() > 0 ? data.get(0).length : 0;
     }
 
+    public DefaultTableLens(List<Object[]> data,
+                            int headerRowCount,
+                            int headerColCount)
+    {
+       this(data);
+       this.headerRowCount = headerRowCount;
+       this.headerColCount = headerColCount;
+    }
+
     public DefaultTableLens(Object[][] data) {
         for (int i = 0; i < data.length; i++) {
             values.add(data[i]);

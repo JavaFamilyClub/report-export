@@ -51,7 +51,8 @@
 
     <properties>
         <javafamily.reportexport.version>0.0.1-SNAPSHOT</javafamily.reportexport.version>
-        <javafamily.utils.version>2.3.2-beta.4</javafamily.utils.version>
+<!--        <javafamily.utils.version>2.3.2-beta.4</javafamily.utils.version>-->
+        <javafamily.utils.version>2.3.2-SNAPSHOT</javafamily.utils.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>

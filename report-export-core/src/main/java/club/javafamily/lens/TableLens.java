@@ -1,13 +1,26 @@
 package club.javafamily.lens;
 
-import club.javafamily.utils.spring.ObjectUtils;
-
 /**
  * @author Jack Li
  * @date 2022/9/6 上午9:00
  * @description TableLens 顶层接口
  */
 public interface TableLens {
+
+    /**
+     * 默认的 span size
+     */
+    int DEFAULT_SPAN = 1;
+
+    /**
+     * 默认的 header count
+     */
+    int DEFAULT_HEADER_COUNT = 1;
+
+    /**
+     * mark cell is span cell
+     */
+    int SPAN_CELL = -65535;
 
     /**
      * getting obj
@@ -40,17 +53,62 @@ public interface TableLens {
      * get header row count
      * @return header count
      */
-    default int getHeaderRowCount() {
-        return 1;
-    }
+    int getHeaderRowCount();
+
+    /**
+     * set header row count
+     * @param rowCount row count
+     */
+    void setHeaderRowCount(int rowCount);
 
     /**
      * get header col count
      * @return header count
      */
-    default int getHeaderColCount() {
-        return 1;
+    int getHeaderColCount();
+
+    /**
+     * check cell is span cell
+     * @param row row index
+     * @param col col index
+     * @return <code>true</code> mean it is span cell
+     */
+    default boolean isSpanCell(int row, int col) {
+        return getRowSpan(row, col) == SPAN_CELL
+           || getColSpan(row, col) == SPAN_CELL;
     }
+
+    /**
+     * row span
+     * @param row row index
+     * @param col col index
+     * @return span
+     */
+    int getRowSpan(int row, int col);
+
+    /**
+     * setting row span
+     * @param row row index
+     * @param col col index
+     * @param span span size
+     */
+    void setRowSpan(int row, int col, Integer span);
+
+    /**
+     * col span
+     * @param row row index
+     * @param col col index
+     * @return span
+     */
+    int getColSpan(int row, int col);
+
+    /**
+     * setting col span
+     * @param row row index
+     * @param col col index
+     * @param span span size
+     */
+    void setColSpan(int row, int col, Integer span);
 
     /**
      * 获取 header 的 col 下标

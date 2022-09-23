@@ -191,6 +191,12 @@ public class PdfExporter extends AbstractExporter {
      */
     private void fillCellData(Table table, TableAssembly assembly, int row, int col) throws Exception {
         TableLens tableLens = assembly.getTableLens();
+
+        // if span cell, render is not required.
+        if(tableLens.isSpanCell(row, col)) {
+            return;
+        }
+
         TableStyleLayout styleLayout = assembly.getStyleLayout();
         boolean isHeader = tableLens.isRowHeader(row);
         Object cell = tableLens.getObject(row, col);
@@ -205,7 +211,9 @@ public class PdfExporter extends AbstractExporter {
         text.setFont(pdfFont);
 
         // create cell
-        Cell pdfCell = new Cell().add(text);
+        Cell pdfCell = new Cell(tableLens.getRowSpan(row, col),
+           tableLens.getColSpan(row, col))
+           .add(text);
 
         pdfCell.setHeight(styleLayout.getHeight(row, col));
 

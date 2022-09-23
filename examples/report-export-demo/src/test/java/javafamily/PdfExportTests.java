@@ -23,6 +23,8 @@ import org.springframework.util.StreamUtils;
 
 import java.awt.*;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
@@ -66,7 +68,9 @@ public class PdfExportTests {
 
    @BeforeEach
    void init() throws Exception {
-      initTableLens();
+//      initTableLens();
+
+      initTableLensWithSpan();
 
       initReport();
 
@@ -112,6 +116,54 @@ public class PdfExportTests {
       lens = new DefaultTableLens(data);
    }
 
+   private void initTableLensWithSpan() throws Exception {
+      ClassPathResource resource = new ClassPathResource("data2_Sep20_H17.txt");
+
+      List<Object[]> data = new ArrayList<>();
+      final SimpleDateFormat format = new SimpleDateFormat(DateUtil.NORMAL_DATE_HOUR_PATTERN);
+
+      try(InputStream in = resource.getInputStream();
+          InputStreamReader isr = new InputStreamReader(in);
+          BufferedReader br = new BufferedReader(isr))
+      {
+         br.lines().forEach(line -> {
+            String[] items = line.split(",");
+
+            if(data.size() > 1) {
+               Date time = null;
+               try {
+                  time = format.parse(items[0]);
+               } catch (ParseException e) {
+                  throw new RuntimeException(e);
+               }
+               items[0] = time.getHours() + "";
+            }
+
+            data.add(items);
+         });
+      }
+
+      lens = new DefaultTableLens(data, 2, 1);
+
+      // row count span
+      lens.setRowSpan(0, 0, 2);
+
+      // 风
+      lens.setColSpan(0, 1, 6);
+
+      // 总海浪
+      lens.setColSpan(0, 7, 3);
+
+      // 风浪
+      lens.setColSpan(0, 10, 2);
+
+      // 涌浪
+      lens.setColSpan(0, 12, 3);
+
+      // 流
+      lens.setColSpan(0, 16, 2);
+   }
+
    private void initMockTableLens() throws Exception {
       Object[][] data = new Object[5][5];
 
@@ -142,12 +194,18 @@ public class PdfExportTests {
       TableStyleLayout tableStyleLayout = new DefaultTableStyleLayout();
 
       for (int i = lens.getHeaderRowCount(); i < lens.getRowCount(); i++) {
-         if(Double.parseDouble((String) lens.getObject(i, 16)) > 16) {
-            tableStyleLayout.setBackground(i, 16, Color.RED);
+         if(Double.parseDouble((String) lens.getObject(i, 6)) > 20) {
+            tableStyleLayout.setBackground(i, 6, Color.RED);
+         }
+
+         if(Double.parseDouble((String) lens.getObject(i, 17)) > 1) {
+            tableStyleLayout.setBackground(i, 17, Color.RED);
          }
       }
 
-      tableStyleLayout.setRowBackground(0, new Color(242,193,97));
+      final Color rowHeaderBg = new Color(242, 193, 97);
+      tableStyleLayout.setRowBackground(0, rowHeaderBg);
+      tableStyleLayout.setRowBackground(1, rowHeaderBg);
 
       tableStyleLayout.setColBackground(2, new Color(237, 220, 218));
       tableStyleLayout.setColBackground(4, new Color(222, 230, 240));
@@ -188,7 +246,7 @@ public class PdfExportTests {
 
       unit.setPosition(new DoublePoint(80, 45));
 
-      unitEn = new TextAssembly("JavaFamily Sea Marine Forecasting Center, SOA");
+      unitEn = new TextAssembly("Mlog Sea Marine Forecasting Center, SOA");
       TextStyleLayout styleLayout2 = unitEn.getStyleLayout();
       styleLayout2.setTextColor(new Color(17,125,204));
       styleLayout2.setTextFont(StyleLayoutConstants.DEFAULT_HEADER_FONT);
@@ -215,9 +273,9 @@ public class PdfExportTests {
 
       publishTime.setStyleLayout(styleLayout);
 
-      auth = new TextAssembly("-- JavaFamily 版权所有");
+      auth = new TextAssembly("-- Mlog 版权所有");
 
-      auth.setPosition(new DoublePoint(650, 320));
+      auth.setPosition(new DoublePoint(650, 520));
 
       auth.setStyleLayout(styleLayout);
    }
