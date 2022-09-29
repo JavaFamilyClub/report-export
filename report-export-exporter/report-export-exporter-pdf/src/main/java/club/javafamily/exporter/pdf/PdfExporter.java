@@ -37,6 +37,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
+import static com.itextpdf.kernel.pdf.CompressionConstants.BEST_COMPRESSION;
+
 /**
  * @author Jack Li
  * @date 2022/9/8 下午5:50
@@ -67,6 +69,7 @@ public class PdfExporter extends AbstractExporter {
 
         // 创建一个指向文件或者 out 流的 PDFWriter, 该 writer 会监听 PdfDocument
         PdfWriter pdfWriter = new PdfWriter(out);
+//        pdfWriter.setCompressionLevel(BEST_COMPRESSION);
         // 创建 PdfDocument 代表要创建的 PDF 文件, 管理要写入的内容和相关信息
         final StampingProperties properties = new StampingProperties();
         properties.useAppendMode();

@@ -52,13 +52,16 @@ public class PdfUtils {
 //         LOGGER.warn("Registered font is not found! {}", font.getFontName());
 //      }
 
+//      return PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H",
+//              PdfFontFactory.EmbeddingStrategy.PREFER_NOT_EMBEDDED, false);
+
       if(font == null) {
          font = StyleLayoutConstants.DEFAULT_TEXT_FONT;
       }
 
-      PdfFont pdfFont = PdfFontFactory.createRegisteredFont(font.getName(), PdfEncodings.IDENTITY_H,
-              PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED,
-              font.isBold() ? FontStyles.BOLD : FontStyles.NORMAL);
+      PdfFont pdfFont = PdfFontFactory.createRegisteredFont(font.getName(),
+              PdfEncodings.IDENTITY_H,
+              PdfFontFactory.EmbeddingStrategy.PREFER_NOT_EMBEDDED);
 
       return pdfFont;
    }
